@@ -1,4 +1,4 @@
-var AppCreator = {};
+
 (function() {
     
     AppCreator.Element = function(config) {
@@ -13,6 +13,8 @@ var AppCreator = {};
                 length:0
             };
             this.attributesPadding = 2;
+            this._isSelected = false;
+            this._resizePoints = {};
 
             // call super constructor
             Kinetic.Group.call(this, config);
@@ -72,7 +74,27 @@ var AppCreator = {};
             
             return this._title;
         }, 
-        
+        createResizePoints: function() {
+            
+        },
+        _getResizePointMoveFunction: function(type) {
+            switch(type) {
+                
+            }
+        },
+        setSelected: function(selected) {
+            if (selected && !this._isSelected) {
+                this.getParent().add(new AppCreator.ResizePoint({
+                    type: AppCreator.ResizePoint.Type.NorthWest,
+                    x: this.getX(),
+                    y: this.getY(),
+                    target: this
+                }));
+               
+                this._isSelected = true;
+                this.getParent().draw();
+            }
+        },
         addAttribute: function(attribute) {
             if (typeof this._attributes[attribute.name] === 'undefined') {
                 var attr = new AppCreator.Attribute({
