@@ -8,74 +8,21 @@
     <body>
         <div id="container"></div>
 <!--        <script src="http://d3lp1msu2r81bx.cloudfront.net/kjs/js/lib/v4.2.0/kinetic-v4.2.0.js"></script>-->
-        <script src="AppCreator.js"></script>
-        <script src="KineticJS/kinetic-v4.2.0.js" ></script>
+<script src="kinetic-v4.2.0.js" ></script>        
+<script src="AppCreator.js"></script>
         <script src="Element.js"></script>
         <script src="Attribute.js"></script>
         <script src="ResizePoint.js"></script>
         <script>
-            var stage = new Kinetic.Stage({
-                container: 'container',
-                width: 878,
-                height: 600
-            });
-
-            var layer = new Kinetic.Layer();
-
-            var group = new Kinetic.Group({
-                draggable: true
-            });
-
-            var rect = new Kinetic.Rect({
-                x: 190,
-                y: 15,
-                width: 150,
-                height: 200,
-                fill: 'white',
-                stroke: 'black',
-                strokeWidth: 1
-            });
-
-    
-
-            var text = new Kinetic.Text({
-                x: 195,
-                y: 17,
-                text: '+Name: String',
-                fontSize: 13,
-                fontFamily: 'Calibri',
-                textFill: 'green',
-                draggable: true,
-                dragBoundFunc: function(pos) {
-                    return {
-                        x: this.getAbsolutePosition().x,
-                        y: pos.y
-                    }
-                }
-            });
-
-            // add the shape to the layer
-            group.add(rect);
-            group.add(text);
-            group.add(new Kinetic.Line({
-                points: [rect.getX(), rect.getY() + 20, rect.getX()+rect.getWidth(), rect.getY() + 20],
-                stroke: 'black',
-                strokeWidth: 1
-        
-            }));
-            //layer.add(group);
-            
             var test = new AppCreator.Element({
                 x: 100,
                 y: 100,
+                width: 50,
+                height: 200,
                 draggable: true
             });
             
-            
-            
-            layer.add(test);
-            // add the layer to the stage
-            stage.add(layer);
+            AppCreator.layer.add(test);
             
             test.addAttribute({name: "testovacia",type: 'String'});
             test.addAttribute({name: "testovacia1",type: 'String'});

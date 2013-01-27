@@ -82,6 +82,22 @@
             }
             
             return calculated;
+        },
+        resizeToNewSize: function(newWidth, newHeight) {
+            var points = this._line.getPoints();
+            if (newWidth) {
+                this.setWidth(newWidth);
+                this._text.setWidth(newWidth);
+                points[1].x = newWidth;
+            }
+            if (newHeight) {
+                this.setHeight(newHeight);
+                this._text.setHeight(newHeight);
+                points[1].y = newHeight;
+                points[0].y = newHeight;
+            }
+            
+            this._line.setPoints(points);
         }
     }
     

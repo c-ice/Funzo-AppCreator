@@ -20,9 +20,10 @@
     
     AppCreator.ResizePoint.prototype = {
         _initResizePoint: function(config) {
-            this._type = {};
-            this._target = config.target;
-            this.setDefaultAttrs({
+            var self = this;
+            self._type = {};
+            self._target = config.target;
+            self.setDefaultAttrs({
                 width: 5,
                 height: 5,
                 x: -5,
@@ -31,15 +32,85 @@
                 draggable: true
             });
             // call super constructor
-            Kinetic.Rect.call(this, config);
-            this.nodeType = 'ResizePoint';
+            Kinetic.Rect.call(self, config);
+            self.nodeType = 'ResizePoint';
             
-            this.on('mouseout', function(){
+            self.on('mouseout', function(){
                 document.body.style.cursor = 'default';
             });
             
-            this.on('dragmove', function(){
+            self.on('dragstart', function() {
+                self._dragStartX = self.getX();
+                self._dragStartY = self.getY();
+            });
+            
+            self.on('dragend', function() {
+               self._dragStartX = null;
+               self._dragStartY = null;
+            });
+            
+            self.on('dragmove', function() {
+                var newWidth = self._target.getWidth();
+                var newHeight = self._target.getHeight();
+                if (self.getX() != self.dragStartX) {
+                    var deltaX = self._dragStartX - self.getX();
+                    
+                    if (self._type.id == AppCreator.ResizePoint.Type.NorthEast.id || 
+                        self._type.id == AppCreator.ResizePoint.Type.SouthEast.id) {
+                        if (this._target.getMinSize().width <= newWidth - deltaX) {
+                            newWidth -= deltaX;
+                        } else {
+                            self.setX(self._dragStartX);
+                        }
+                    } else {
+                        // constraint to minSize
+                        if (this._target.getMinSize().width <= newWidth + deltaX) {
+                            newWidth += deltaX;
+                            self._target.setX(self._target.getX() - deltaX);
+                        } else {
+                            self.setX(self._dragStartX);
+                        }
+                    }
+                    
+                    self._dragStartX = self.getX();
+                }
+                if (self._dragStartY != self.getY()) {
+                    var deltaY = self._dragStartY - self.getY();
+
+                    if (self._type.id == AppCreator.ResizePoint.Type.NorthEast.id || 
+                        self._type.id == AppCreator.ResizePoint.Type.NorthWest.id) {
+                        // constraint to minSize
+                        if (this._target.getMinSize().height <= newHeight + deltaY) {
+                            newHeight += deltaY;
+                            self._target.setY(self._target.getY() - deltaY);
+                        } else {
+                            self.setY(self._dragStartY);
+                        }
+                    } else {
+                        if (this._target.getMinSize().height <= newHeight - deltaY) {
+                            newHeight -= deltaY;
+                        } else {
+                            self.setY(self._dragStartY);
+                        }
+                    }
+                    
+                    self._dragStartY = self.getY();
+                }
                 
+                self._target.resizeToNewSize(newWidth, newHeight);
+                self._target.draw();
+            });
+            
+            self._target.on('dragmove', function() {
+                self.setType(self._type);
+            });
+            
+            self._target.on('widthChange', function(evt) {
+                  if (!self._dragStartX) {
+                      self.setType(self._type);
+                  }
+//                evt.newVal;
+//                this.setType(this._type);
             });
         },
         /**
@@ -50,6 +121,29 @@
             this.on('mouseover', function(){
                 document.body.style.cursor = type.value;
             });
+            
+            var deltaX = 0, deltaY = 0;
+            switch(type.id) {
+                case AppCreator.ResizePoint.Type.NorthWest.id:
+                    deltaY = -this.getHeight();
+                    deltaX = -this.getWidth();
+                    break;
+                case AppCreator.ResizePoint.Type.SouthWest.id:
+                    deltaY = this._target.getHeight();
+                    deltaX = -this.getWidth();
+                    break;
+                case AppCreator.ResizePoint.Type.SouthEast.id:
+                    deltaY = this._target.getHeight();
+                    deltaX = this._target.getWidth();
+                    break;
+                case AppCreator.ResizePoint.Type.NorthEast.id:
+                    deltaY = -this.getHeight();
+                    deltaX = this._target.getWidth();
+                    break;
+            }
+            
+            this.setX(this._target.getX() + deltaX);
+            this.setY(this._target.getY() + deltaY);
             
             this._type = type;
         }

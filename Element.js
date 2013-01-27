@@ -7,20 +7,22 @@
     
     AppCreator.Element.prototype = {
         _initElement: function(config) {
-            this.attributesDrawHeight = 19;
-            this._title = "<< Title >>";
-            this._attributes = {
+            var self = this;
+            self.attributesDrawHeight = 19;
+            self._title = "<< Title >>";
+            self._attributes = {
                 length:0
             };
-            this.attributesPadding = 2;
-            this._isSelected = false;
-            this._resizePoints = {};
+            self.attributesPadding = 2;
+            self._isSelected = false;
+            self._resizePoints = [];
+            self._minSize = {width:0, height:self.attributesDrawHeight};
 
             // call super constructor
-            Kinetic.Group.call(this, config);
-            this.nodeType = 'Element';
+            Kinetic.Group.call(self, config);
+            self.nodeType = 'Element';
             
-            this.add(new Kinetic.Rect({
+            self.add(new Kinetic.Rect({
                 x: 0,
                 y: 0,
                 width: 150,
@@ -30,9 +32,14 @@
                 strokeWidth: 1
             }));
             
-            this._renderTitle(false);
+            self._renderTitle(false);
+            self.on('click', function() {
+                self.setSelected(true);
+            });
         },
-        
+        getMinSize: function() {
+            return this._minSize;
+        },
         _renderTitle: function(exists) {
             if (exists) {
                 var titles = this.get('#title');
@@ -84,16 +91,46 @@
         },
         setSelected: function(selected) {
             if (selected && !this._isSelected) {
-                this.getParent().add(new AppCreator.ResizePoint({
-                    type: AppCreator.ResizePoint.Type.NorthWest,
-                    x: this.getX(),
-                    y: this.getY(),
-                    target: this
-                }));
-               
-                this._isSelected = true;
+                if (!this._resizePoints ||
+                    this._resizePoints.length < 4) {
+                    this._resizePoints.push(
+                        new AppCreator.ResizePoint({
+                            type: AppCreator.ResizePoint.Type.NorthWest,
+                            target: this, 
+                            draggable: true
+                        }), 
+                        new AppCreator.ResizePoint({
+                            type: AppCreator.ResizePoint.Type.NorthEast,
+                            target: this, 
+                            draggable: true
+                        }),
+                        new AppCreator.ResizePoint({
+                            type: AppCreator.ResizePoint.Type.SouthEast,
+                            target: this, 
+                            draggable: true
+                        }),
+                        new AppCreator.ResizePoint({
+                            type: AppCreator.ResizePoint.Type.SouthWest,
+                            target: this, 
+                            draggable: true
+                        }));
+                }
+                    
+                for (var i in this._resizePoints) {
+                    this.getParent().add(this._resizePoints[i]);
+                }
+
                 this.getParent().draw();
             }
+            
+            if (!selected && this._isSelected) {
+                for (var i in this._resizePoints) {
+                    this._resizePoints[i].remove();
+                }
+                this.getParent().draw();
+            }
+            
+            this._isSelected = selected;
         },
         addAttribute: function(attribute) {
             if (typeof this._attributes[attribute.name] === 'undefined') {
@@ -105,6 +142,8 @@
                     type: attribute.type
                 });
 
+                this._minSize.height = (attr.getY() + attr.getHeight()) + this.attributesDrawHeight;
+                
                 this.resizeWithNewMinWidth(attr.getWidth());
 
                 this.add(attr);
@@ -128,11 +167,33 @@
             
             this.draw();
         },
-        
+        resizeToNewSize: function(newWidth, newHeight) {
+            if (newWidth) {
+                this.setWidth(newWidth);
+            }
+            if (newHeight)
+                this.setHeight(newHeight);
+            
+            for(var i = 0; i < this.getChildren().length; i++) {
+                var child = this.getChildren()[i];
+                if (child.nodeType == 'Attribute') {
+                    child.resizeToNewSize(newWidth);
+                }
+                else if (child.nodeType == 'Shape' && child.shapeType == 'Line') {
+                    var points = child.getPoints();
+                    points[1].x = (newWidth ? newWidth : points[1].x);
+                    child.setPoints(points);
+                } else {
+                    child.setWidth(newWidth);
+                    child.setHeight(newHeight);
+                }
+            }
+        },
         resizeWithNewMinWidth: function(newMinWidth) {
             var calculated = newMinWidth;
             if (this.getWidth() < newMinWidth) {                
                 this.setWidth(calculated);
+                this._minSize.width = newMinWidth;
             
                 for(var i = 0; i < this.getChildren().length; i++) {
                     var child = this.getChildren()[i];
