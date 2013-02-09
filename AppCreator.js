@@ -9,9 +9,12 @@ AppCreator.stage =  new Kinetic.Stage({
             width: 878,
             height: 600
         });
-            
+
+AppCreator.gridSize = 5;
 AppCreator.layer = new Kinetic.Layer();
- 
+AppCreator.linesLayer = new Kinetic.Layer();
+
+AppCreator.stage.add(AppCreator.linesLayer);
 AppCreator.stage.add(AppCreator.layer);
 
             

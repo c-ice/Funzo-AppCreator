@@ -13,20 +13,41 @@
         <script src="Element.js"></script>
         <script src="Attribute.js"></script>
         <script src="ResizePoint.js"></script>
+        <script src="Association.js"></script>
         <script>
-            var test = new AppCreator.Element({
+            var A = new AppCreator.Element({
                 x: 100,
                 y: 100,
                 width: 50,
                 height: 200,
                 draggable: true
             });
+            var B = new AppCreator.Element({
+                x: 350,
+                y: 100,
+                width: 50,
+                height: 200,
+                draggable: true
+            });
             
-            AppCreator.layer.add(test);
+            AppCreator.layer.add(A);
             
-            test.addAttribute({name: "testovacia",type: 'String'});
-            test.addAttribute({name: "testovacia1",type: 'String'});
-            test.addAttribute({name: "testovacia2",type: 'String'});
+            A.addAttribute({name: "testovacia",type: 'String'});
+            A.addAttribute({name: "testovacia1",type: 'String'});
+            A.addAttribute({name: "testovacia2",type: 'String'});
+            
+            AppCreator.layer.add(B);
+            
+            B.addAttribute({name: "Collection",type: 'String'});
+            B.addAttribute({name: "Transaction",type: 'String'});
+            
+            var assoc = new AppCreator.Association({target: A, 
+                source: B, 
+                stroke: 'black',
+                strokeWidth: 1});
+            
+            AppCreator.linesLayer.add(assoc);
+            AppCreator.linesLayer.draw();
             // GRID - snippet 
             // http://stackoverflow.com/questions/9494292/jquery-drag-and-drop-and-snap-to-grid-in-kineticjs
 //            box.on("dragend", function(){

@@ -13,10 +13,14 @@
             self._attributes = {
                 length:0
             };
+            self._assocObjects = [];
             self.attributesPadding = 2;
             self._isSelected = false;
             self._resizePoints = [];
-            self._minSize = {width:0, height:self.attributesDrawHeight};
+            self._minSize = {
+                width:0, 
+                height:self.attributesDrawHeight
+                };
 
             // call super constructor
             Kinetic.Group.call(self, config);
@@ -35,6 +39,13 @@
             self._renderTitle(false);
             self.on('click', function() {
                 self.setSelected(true);
+            });
+            
+            self.on('dragmove', function(){
+               var newX = Math.floor(self.getX() / AppCreator.gridSize) * AppCreator.gridSize;
+               var newY = Math.floor(self.getY() / AppCreator.gridSize) * AppCreator.gridSize;
+               self.setX(newX);
+               self.setY(newY);
             });
         },
         getMinSize: function() {
@@ -81,40 +92,35 @@
             
             return this._title;
         }, 
-        createResizePoints: function() {
-            
-        },
-        _getResizePointMoveFunction: function(type) {
-            switch(type) {
-                
+        _createResizePoints: function() {
+            if (!this._resizePoints ||
+                this._resizePoints.length < 4) {
+                this._resizePoints.push(
+                    new AppCreator.ResizePoint({
+                        type: AppCreator.ResizePoint.Type.NorthWest,
+                        target: this, 
+                        draggable: true
+                    }), 
+                    new AppCreator.ResizePoint({
+                        type: AppCreator.ResizePoint.Type.NorthEast,
+                        target: this, 
+                        draggable: true
+                    }),
+                    new AppCreator.ResizePoint({
+                        type: AppCreator.ResizePoint.Type.SouthEast,
+                        target: this, 
+                        draggable: true
+                    }),
+                    new AppCreator.ResizePoint({
+                        type: AppCreator.ResizePoint.Type.SouthWest,
+                        target: this, 
+                        draggable: true
+                    }));
             }
         },
         setSelected: function(selected) {
             if (selected && !this._isSelected) {
-                if (!this._resizePoints ||
-                    this._resizePoints.length < 4) {
-                    this._resizePoints.push(
-                        new AppCreator.ResizePoint({
-                            type: AppCreator.ResizePoint.Type.NorthWest,
-                            target: this, 
-                            draggable: true
-                        }), 
-                        new AppCreator.ResizePoint({
-                            type: AppCreator.ResizePoint.Type.NorthEast,
-                            target: this, 
-                            draggable: true
-                        }),
-                        new AppCreator.ResizePoint({
-                            type: AppCreator.ResizePoint.Type.SouthEast,
-                            target: this, 
-                            draggable: true
-                        }),
-                        new AppCreator.ResizePoint({
-                            type: AppCreator.ResizePoint.Type.SouthWest,
-                            target: this, 
-                            draggable: true
-                        }));
-                }
+                this._createResizePoints();
                     
                 for (var i in this._resizePoints) {
                     this.getParent().add(this._resizePoints[i]);
@@ -131,6 +137,9 @@
             }
             
             this._isSelected = selected;
+        },
+        connectToElement: function(element, withLine) {
+            
         },
         addAttribute: function(attribute) {
             if (typeof this._attributes[attribute.name] === 'undefined') {
@@ -188,6 +197,8 @@
                     child.setHeight(newHeight);
                 }
             }
+            
+            this.fire('resize');
         },
         resizeWithNewMinWidth: function(newMinWidth) {
             var calculated = newMinWidth;
