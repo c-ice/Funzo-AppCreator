@@ -16,7 +16,7 @@
             });
             
             Kinetic.Line.call(self, config);
-            
+            this.ACType = 'Association' 
             self.on('click', function() {
                 
             });

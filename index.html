@@ -7,56 +7,61 @@
     </head>
     <body>
         <div id="container"></div>
-<!--        <script src="http://d3lp1msu2r81bx.cloudfront.net/kjs/js/lib/v4.2.0/kinetic-v4.2.0.js"></script>-->
-<script src="kinetic-v4.2.0.js" ></script>        
-<script src="AppCreator.js"></script>
+        <script src="KineticJS/dist/kinetic-vcurrent.min.js" ></script>        
+        <script src="AppCreator.js"></script>
+        <script src="jquery-1.9.1.min.js"></script>
         <script src="Element.js"></script>
         <script src="Attribute.js"></script>
         <script src="ResizePoint.js"></script>
         <script src="Association.js"></script>
         <script>
-            var A = new AppCreator.Element({
-                x: 100,
-                y: 100,
-                width: 50,
-                height: 200,
-                draggable: true
+            var instance = null;
+            $(document).ready(function() {
+                instance = new AppCreator();
+                
+                var A = new AppCreator.Element({
+                    x: 100,
+                    y: 100,
+                    width: 50,
+                    height: 200,
+                    draggable: true
+                });
+                var B = new AppCreator.Element({
+                    x: 350,
+                    y: 100,
+                    width: 50,
+                    height: 200,
+                    draggable: true
+                });
+            
+                instance.getLayer().add(A);
+            
+                A.addAttribute({name: "testovacia",type: 'String'});
+                A.addAttribute({name: "testovacia1",type: 'String'});
+                A.addAttribute({name: "testovacia2",type: 'String'});
+            
+                instance.getLayer().add(B);
+            
+                B.addAttribute({name: "Collection",type: 'String'});
+                B.addAttribute({name: "Transaction",type: 'String'});
+            
+                var assoc = new AppCreator.Association({target: A, 
+                    source: B, 
+                    stroke: 'black',
+                    strokeWidth: 1});
+            
+                instance.getLinesLayer().add(assoc);
+                instance.getLinesLayer().draw();
+                // GRID - snippet 
+                // http://stackoverflow.com/questions/9494292/jquery-drag-and-drop-and-snap-to-grid-in-kineticjs
+                //            box.on("dragend", function(){
+                //                snaptogrid(box);
+                //            });
+                //            function snaptogrid(YourObject){
+                //                YourObject.x = Math.floor(YourObject.x/100)*100 +50;
+                //                YourObject.y = Math.floor(YourObject.y/100)*100 +50;
+                //            }
             });
-            var B = new AppCreator.Element({
-                x: 350,
-                y: 100,
-                width: 50,
-                height: 200,
-                draggable: true
-            });
-            
-            AppCreator.layer.add(A);
-            
-            A.addAttribute({name: "testovacia",type: 'String'});
-            A.addAttribute({name: "testovacia1",type: 'String'});
-            A.addAttribute({name: "testovacia2",type: 'String'});
-            
-            AppCreator.layer.add(B);
-            
-            B.addAttribute({name: "Collection",type: 'String'});
-            B.addAttribute({name: "Transaction",type: 'String'});
-            
-            var assoc = new AppCreator.Association({target: A, 
-                source: B, 
-                stroke: 'black',
-                strokeWidth: 1});
-            
-            AppCreator.linesLayer.add(assoc);
-            AppCreator.linesLayer.draw();
-            // GRID - snippet 
-            // http://stackoverflow.com/questions/9494292/jquery-drag-and-drop-and-snap-to-grid-in-kineticjs
-//            box.on("dragend", function(){
-//                snaptogrid(box);
-//            });
-//            function snaptogrid(YourObject){
-//                YourObject.x = Math.floor(YourObject.x/100)*100 +50;
-//                YourObject.y = Math.floor(YourObject.y/100)*100 +50;
-//            }
         </script>
     </body>
 </html>

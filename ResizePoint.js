@@ -33,7 +33,11 @@
             });
             // call super constructor
             Kinetic.Rect.call(self, config);
-            self.nodeType = 'ResizePoint';
+            self.ACType = 'ResizePoint';
+            
+            self.on('mouseover', function(){
+                document.body.style.cursor = self._type.value;
+            });
             
             self.on('mouseout', function(){
                 document.body.style.cursor = 'default';
@@ -50,6 +54,7 @@
             });
             
             self.on('dragmove', function() {
+                self._target.simulate('dragstart');
                 var newWidth = self._target.getWidth();
                 var newHeight = self._target.getHeight();
                 if (self.getX() != self.dragStartX) {
@@ -105,12 +110,21 @@
                 self.setType(self._type);
             });
             
+            self._target.on('dragstart', function(){
+                var old = self.getParent();
+                self.moveTo(this.getParent());
+                old.draw();
+            });
+            
+            self._target.on('dragend', function(){
+                self.moveTo(this.getParent());
+                this.getParent().draw();
+            });
+            
             self._target.on('widthChange', function(evt) {
                   if (!self._dragStartX) {
                       self.setType(self._type);
                   }
-//                evt.newVal;
-//                this.setType(this._type);
             });
         },
         /**
@@ -118,10 +132,6 @@
          * @param {Type}
          */
         setType: function(type) {
-            this.on('mouseover', function(){
-                document.body.style.cursor = type.value;
-            });
-            
             var deltaX = 0, deltaY = 0;
             switch(type.id) {
                 case AppCreator.ResizePoint.Type.NorthWest.id:

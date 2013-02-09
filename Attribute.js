@@ -17,7 +17,7 @@
 
             // call super constructor
             Kinetic.Group.call(this, config);
-            this.nodeType = 'Attribute';
+            this.ACType = 'Attribute';
             
             this._text = new Kinetic.Text({
                 x: this.attributesPadding,
@@ -25,7 +25,7 @@
                 text: "",
                 fontSize: 13,
                 fontFamily: 'Calibri',
-                textFill: 'black'
+                fill: 'black'
             });
            
             this._line = new Kinetic.Line({
@@ -36,9 +36,8 @@
             
             this.refreshText();
                 
-            this.add(this._text);
             this.add(this._line);
-            
+            this.add(this._text);
         },
         setText: function(name, type) {
             if (type) {

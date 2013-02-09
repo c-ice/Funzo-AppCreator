@@ -7,26 +7,25 @@
     
     AppCreator.Element.prototype = {
         _initElement: function(config) {
-            var self = this;
-            self.attributesDrawHeight = 19;
-            self._title = "<< Title >>";
-            self._attributes = {
+            this.attributesDrawHeight = 19;
+            this._title = "<< Title >>";
+            this._attributes = {
                 length:0
             };
-            self._assocObjects = [];
-            self.attributesPadding = 2;
-            self._isSelected = false;
-            self._resizePoints = [];
-            self._minSize = {
+            this._assocObjects = [];
+            this.attributesPadding = 2;
+            this._isSelected = false;
+            this._resizePoints = [];
+            this._minSize = {
                 width:0, 
-                height:self.attributesDrawHeight
+                height:this.attributesDrawHeight
                 };
 
             // call super constructor
-            Kinetic.Group.call(self, config);
-            self.nodeType = 'Element';
+            Kinetic.Group.call(this, config);
+            this.ACType = 'Element';
             
-            self.add(new Kinetic.Rect({
+            this.add(new Kinetic.Rect({
                 x: 0,
                 y: 0,
                 width: 150,
@@ -36,16 +35,16 @@
                 strokeWidth: 1
             }));
             
-            self._renderTitle(false);
-            self.on('click', function() {
-                self.setSelected(true);
+            this._renderTitle(false);
+            this.on('click', function() {
+                this.setSelected(true);
             });
             
-            self.on('dragmove', function(){
-               var newX = Math.floor(self.getX() / AppCreator.gridSize) * AppCreator.gridSize;
-               var newY = Math.floor(self.getY() / AppCreator.gridSize) * AppCreator.gridSize;
-               self.setX(newX);
-               self.setY(newY);
+            this.on('dragmove', function(){
+               var newX = Math.floor(this.getX() / AppCreator.gridSize) * AppCreator.gridSize;
+               var newY = Math.floor(this.getY() / AppCreator.gridSize) * AppCreator.gridSize;
+               this.setX(newX);
+               this.setY(newY);
             });
         },
         getMinSize: function() {
@@ -74,7 +73,7 @@
                     text: this.title(),
                     fontSize: 13,
                     fontFamily: 'Calibri',
-                    textFill: 'black',
+                    fill: 'black',
                     align: 'center', 
                     width: 150
                 }));
@@ -185,7 +184,7 @@
             
             for(var i = 0; i < this.getChildren().length; i++) {
                 var child = this.getChildren()[i];
-                if (child.nodeType == 'Attribute') {
+                if (child.ACType == 'Attribute') {
                     child.resizeToNewSize(newWidth);
                 }
                 else if (child.nodeType == 'Shape' && child.shapeType == 'Line') {
@@ -208,7 +207,7 @@
             
                 for(var i = 0; i < this.getChildren().length; i++) {
                     var child = this.getChildren()[i];
-                    if (child.nodeType == 'Attribute') {
+                    if (child.ACType == 'Attribute') {
                         child.resizeWithNewMinWidth(calculated);
                     }
                     else if (child.nodeType == 'Shape' && child.shapeType == 'Line') {
