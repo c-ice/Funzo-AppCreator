@@ -8,7 +8,7 @@
     AppCreator.Element.prototype = {
         _initElement: function(config) {
             this.attributesDrawHeight = 19;
-            this._title = "<< Title >>";
+            this._title = null;
             this._attributes = {
                 length:0
             };
@@ -25,15 +25,21 @@
             Kinetic.Group.call(this, config);
             this.ACType = 'Element';
             
-            this.add(new Kinetic.Rect({
+            this._border = new Kinetic.Rect({
                 x: 0,
                 y: 0,
                 width: 150,
                 height: 200,
                 fill: 'white',
                 stroke: 'black',
-                strokeWidth: 1
-            }));
+                strokeWidth: 1,
+                shadowColor:'black',
+                shadowBlur:15,
+                shadowOffset:0,
+                shadowOpacity:0.6,
+                shadowEnabled: false
+            });
+            this.add(this._border);
             
             this._renderTitle(false);
             this.on('click', function() {
@@ -58,7 +64,7 @@
                     titles[0].setText(this.title());
                 }
             } else {
-                var attr = new AppCreator.Attribute({
+                this._title = new AppCreator.Attribute({
                     x: 0,
                     y: 0,
                     width: this.getWidth(),
@@ -66,11 +72,11 @@
                     type: ""
                 });
 
-                attr.setKineticText(new Kinetic.Text({
+                this._title.setKineticText(new Kinetic.Text({
                     id: 'title',
                     x: this.attributesPadding,
                     y: this.attributesPadding,
-                    text: this.title(),
+                    text: "<< Title >>",
                     fontSize: 13,
                     fontFamily: 'Calibri',
                     fill: 'black',
@@ -78,18 +84,18 @@
                     width: 150
                 }));
 
-                this.resizeWithNewMinWidth(attr.getWidth());
+                this.resizeWithNewMinWidth(this._title.getWidth());
 
-                this.add(attr);
+                this.add(this._title);
             }
         },
         
         title: function(title) {
             if (typeof title === 'string') {
-                this._title = title;
+                this._title.setText(title);
             } 
             
-            return this._title;
+            return this._title.getText();
         }, 
         _createResizePoints: function() {
             if (!this._resizePoints ||
@@ -115,6 +121,10 @@
                         target: this, 
                         draggable: true
                     }));
+                    
+                for (var i in this._resizePoints) {
+                    this.getParent().add(this._resizePoints[i]);
+                }
             }
         },
         setSelected: function(selected) {
@@ -122,16 +132,18 @@
                 this._createResizePoints();
                     
                 for (var i in this._resizePoints) {
-                    this.getParent().add(this._resizePoints[i]);
+                    this._resizePoints[i].show();
                 }
 
+                this._border.setShadowEnabled(true);
                 this.getParent().draw();
             }
             
             if (!selected && this._isSelected) {
                 for (var i in this._resizePoints) {
-                    this._resizePoints[i].remove();
+                    this._resizePoints[i].hide();
                 }
+                this._border.setShadowEnabled(false);
                 this.getParent().draw();
             }
             
