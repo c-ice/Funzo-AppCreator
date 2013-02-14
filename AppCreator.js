@@ -3,20 +3,22 @@
  * and open the template in the editor.
  */
 
+var AppCreator = {};
 (function(){
-    AppCreator = function(){
-        this._init();
-    };
-    
-    AppCreator.Tools = {
+    // static Global
+    AppCreator.tools = {
         Mouse: 1,
         Association: 2
     };
     
     AppCreator.gridSize = 5;
-    AppCreator.selectedTool = AppCreator.Tools.Mouse;
-    
-    AppCreator.prototype = {
+    AppCreator.selectedTool = AppCreator.tools.Mouse;
+    AppCreator.clickedElement = null;
+    // class instance
+    AppCreator.Root = function(){
+        this._init();
+    };
+    AppCreator.Root.prototype = {
         _init: function () {
             var self = this;
             self._stage =  new Kinetic.Stage({
@@ -35,7 +37,7 @@
             self._stage.content.onclick = function(){
                 var childs = self._layer.getChildren();
                 for(var i in childs) {
-                    if (childs[i].ACType == 'Element') {
+                    if (childs[i].ACType === 'Element') {
                         childs[i].setSelected(false);
                     }
                 }

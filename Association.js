@@ -9,17 +9,9 @@
             var self = this;
             self._target = null;
             self._source = null;
-            self._targetOffset = {
-                'x':0,
-                'y':0
-            };
-            self._sourceOffset = {
-                'x':0,
-                'y':0
-            };
             
             Kinetic.Line.call(self, config);
-            this.ACType = 'Association' 
+            this.ACType = 'Association'; 
             self.on('click', function() {
                 
                 });
@@ -37,7 +29,7 @@
             var points = self.getPoints();
             points.push(new AppCreator.MovePoint(
             {
-                target: self, 
+                owner: self, 
                 index: 1,
                 'x':x, 
                 'y':y
@@ -65,7 +57,7 @@
             var y = self._source.getHeight()/2 + self._source.getY();
             var points = self.getPoints();
             points.push(new AppCreator.MovePoint({
-                target: self, 
+                owner: self, 
                 index: 0,
                 'x':x, 
                 'y':y
@@ -84,30 +76,61 @@
             var points = this.getPoints();
             var len = points.length;
             
-            if (len < 3 && points[0].getY() != points[len - 1].getY()) {
+            if (len < 3 && points[0].getY() !== points[len - 1].getY()) {
                 len = points.push(new AppCreator.MovePoint({
-                    target: this, 
+                    owner: this, 
                     index: 2
                 }), 
                 new AppCreator.MovePoint({
-                    target: this, 
+                    owner: this, 
                     index: 3
                 }));
                 points[0].moveTo(this.getParent());
+                points[0].setIsStatic(true);
+                points[0].setTarget(this.getSource());
                 points[1].moveTo(this.getParent());
                 points[2].moveTo(this.getParent());
                 points[3].moveTo(this.getParent());
+                points[3].setIsStatic(true);
+                points[3].setTarget(this.getTarget());
+                this.setSourceOffset({
+                    x:this.getSource().getWidth(),
+                    y:this.getSource().getHeight()/2
+                });
+                this.setTargetOffset({
+                    x:0,
+                    y:this.getTarget().getHeight()/2
+                });
+            }
+            var xOffset = 0;
+            if (!points[0].getIsStatic()) {
+                xOffset = (this.getSource().getX() > this.getTarget().getX())? 0: this.getSource().getWidth();
+                points[0].setX(this.getSource().getX() + xOffset);
+                points[0].setY(this.getSource().getHeight()/2 + this.getSource().getY());
+            } else {
+                points[0].setX(this.getSource().getX() + this.getSourceOffset().x);
+                points[0].setY(this.getSource().getY() + this.getSourceOffset().y);
             }
             
-            points[0].setX(this.getSource().getWidth()/2 + this.getSource().getX());
-            points[0].setY(this.getSource().getHeight()/2 + this.getSource().getY());
-            
-            points[len - 1].setX(this.getTarget().getWidth()/2 + this.getTarget().getX());
-            points[len - 1].setY(this.getTarget().getHeight()/2 + this.getTarget().getY());
+            if (!points[len - 1].getIsStatic()) {
+                xOffset = (this.getSource().getX() < this.getTarget().getX())? 0: this.getTarget().getWidth();
+                points[len - 1].setX(xOffset + this.getTarget().getX());
+                points[len - 1].setY(this.getTarget().getHeight()/2 + this.getTarget().getY());
+            } else {
+                points[len - 1].setX(this.getTarget().getX() + this.getTargetOffset().x);
+                points[len - 1].setY(this.getTarget().getY() + this.getTargetOffset().y);
+            }
             
             for (var i = 1; i < len - 1; i++) {
-                points[i].setX(points[len - 1].getX() + (points[0].getX() - points[len - 1].getX())/2);
-                points[i].setY((i > 1)? points[len - 1].getY() : points[0].getY()); 
+                if (points[len -1].getY() === points[0].getY() ||
+                    points[len -1].getX() === points[0].getX()) {
+                    points[i].remove();
+                    points = [].concat(points.slice(0, i), points.slice(i+1, len));
+                    len--;
+                } else {
+                    points[i].setX(points[len - 1].getX() + (points[0].getX() - points[len - 1].getX())/2);
+                    points[i].setY((i > 1)? points[len - 1].getY() : points[0].getY()); 
+                }
             }
  
             this.setPoints(points);
@@ -125,10 +148,10 @@
 
             canvas.stroke(this);
         }
-        
-        
-        
-    }
+    };
     
     Kinetic.Global.extend(AppCreator.Association, Kinetic.Line);
+    
+    Kinetic.Node.addGettersSetters(AppCreator.Association, ['targetOffset', 'sourceOffset']);
+    
 })();
