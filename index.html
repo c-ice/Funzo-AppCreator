@@ -19,17 +19,18 @@
         <script src="Association.js"></script>
         <script>
             var instance = null;
+            var A,B;
             $(document).ready(function() {
                 instance = new AppCreator.Root();
                 
-                var A = new AppCreator.Element({
+                A = new AppCreator.Element({
                     x: 100,
                     y: 100,
                     width: 50,
                     height: 200,
                     draggable: true
                 });
-                var B = new AppCreator.Element({
+                B = new AppCreator.Element({
                     x: 350,
                     y: 100,
                     width: 50,
