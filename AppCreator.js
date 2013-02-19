@@ -11,7 +11,7 @@ var AppCreator = {};
         Association: 2
     };
     
-    AppCreator.gridSize = 5;
+    AppCreator.gridSize = 20;
     AppCreator.selectedTool = AppCreator.tools.Mouse;
     AppCreator.clickedElement = null;
     // class instance

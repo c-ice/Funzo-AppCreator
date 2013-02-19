@@ -15,7 +15,6 @@
                 radius: 15,
                 fill: 'black',
                 opacity: 0.5,
-                index: 0,
                 isStatic: false
             });
             // call super constructor
@@ -66,16 +65,20 @@
             
             self.on('dragmove', function() {
                 if (self.getIsStatic()) {
-                    if (self.getOwner().getTarget() == self.getTarget()) {
-                        self.getOwner().setTargetOffset({
-                            x:(self.getX()-self.getTarget().getX()),
-                            y:(self.getY()-self.getTarget().getY())
-                        });
+                    var pos = {
+                            'x':0,
+                            'y':0
+                        };
+                    pos.x = self.getX() - self.getTarget().getX();
+                    pos.y = self.getY() - self.getTarget().getY();
+                    
+                    // todo: contrain x 
+                    // todo: y to gridSize
+                    
+                    if (self.getOwner().getTarget() === self.getTarget()) {
+                        self.getOwner().setTargetOffset(pos);
                     } else {
-                        self.getOwner().setSourceOffset({
-                            x:(self.getX() - self.getTarget().getX()),
-                            y:(self.getY() - self.getTarget().getY())
-                        });
+                        self.getOwner().setSourceOffset(pos);
                     }
                 }
                 
@@ -107,5 +110,5 @@
     
     Kinetic.Global.extend(AppCreator.MovePoint, Kinetic.Circle);
     
-    Kinetic.Node.addGettersSetters(AppCreator.MovePoint, ['index', 'isStatic', 'target', 'owner']);
+    Kinetic.Node.addGettersSetters(AppCreator.MovePoint, ['isStatic', 'target', 'owner']);
 })();
