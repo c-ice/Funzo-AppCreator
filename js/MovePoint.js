@@ -21,13 +21,14 @@
             Kinetic.Circle.call(self, config);
             self.ACType = 'MovePoint';
             self.setDraggable(true);
+            self._offset = 15;
 
             self.setDragBoundFunc(function(pos) {
                 // static and relative to target
-                if (self.getIsStatic() && this.getTarget()) {
-                    var targetPos = this.getTarget().getPosition(),
-                            targetSize = this.getTarget().getSize(),
-                            offset = 16, // corner offset
+                if (self.getIsStatic() && self.getTarget()) {
+                    var targetPos = self.getTarget().getPosition(),
+                            targetSize = self.getTarget().getSize(),
+                            offset = self._offset, // corner offset
                             newPos = {
                         'y': Math.min(Math.max(pos.y, targetPos.y), targetPos.y + targetSize.height),
                         'x': Math.min(Math.max(pos.x, targetPos.x + offset), targetPos.x + targetSize.width - offset)
@@ -69,6 +70,7 @@
             self.on('dragend', function() {
                 self._dragStartX = null;
                 self._dragStartY = null;
+                self.snapToGrid();
             });
 
             self.on('dragmove', function() {
@@ -89,39 +91,35 @@
 
                 self.getOwner().getParent().draw();
             });
-
-            //            self._target.on('dragmove', function() {
-            //                self.setType(self._type);
-            //            });
-            //            
-            //            self._target.on('dragstart', function(){
-            ////                var old = self.getParent();
-            ////                self.moveTo(this.getParent());
-            ////                old.draw();
-            //            });
-            //            
-            //            self._target.on('dragend', function(){
-            ////                self.moveTo(this.getParent());
-            ////                this.getParent().draw();
-            //            });
-            //            
-            //            self._target.on('widthChange', function(evt) {
-            //                  if (!self._dragStartX) {
-            //                      self.setType(self._type);
-            //                  }
-            //            });
         },
         setTarget: function(val) {
-            if (val) {
+            if (val !== undefined) {
+                var self = this;
                 val.on('resize', function() {
-                    this.getDragBoundFunc()(this.getPosition());
+                    var pos = self.attrs['dragBoundFunc'](self.getPosition());
+                    self.setPosition(pos);
+                    self.simulate('dragmove');
                 });
+
+                self.setAttr('target', val);
+            }
+        },
+        snapToGrid: function() {
+
+            if (this.getTarget() !== undefined) {
+                var targetOffset = this.getOwner().getTargetOffset(),
+                        targetSize = this.getTarget().getSize();
+
+                targetOffset.x = (Math.min(Math.max(Math.floor(targetOffset.x / AppCreator.gridSize) * AppCreator.gridSize, 0), targetSize.width));
+                targetOffset.y = (Math.min(Math.max(Math.floor(targetOffset.y / AppCreator.gridSize) * AppCreator.gridSize, 0), targetSize.height));
+                
+                this.getOwner().setTargetOffset(targetOffset);
             }
         }
     };
 
     Kinetic.Global.extend(AppCreator.MovePoint, Kinetic.Circle);
 
-    Kinetic.Node.addSetter
-    Kinetic.Node.addGettersSetters(AppCreator.MovePoint, ['isStatic', 'target', 'owner']);
+    Kinetic.Node.addGetters(AppCreator.MovePoint, ['target']);
+    Kinetic.Node.addGettersSetters(AppCreator.MovePoint, ['isStatic', 'owner']);
 })();
