@@ -56,11 +56,11 @@
             self.on('dragmove', function() {
                 var newWidth = self._target.getWidth();
                 var newHeight = self._target.getHeight();
-                if (self.getX() != self.dragStartX) {
+                if (self.getX() !== self.dragStartX) {
                     var deltaX = self._dragStartX - self.getX();
                     
-                    if (self._type.id == AppCreator.ResizePoint.Type.NorthEast.id || 
-                        self._type.id == AppCreator.ResizePoint.Type.SouthEast.id) {
+                    if (self._type.id === AppCreator.ResizePoint.Type.NorthEast.id || 
+                        self._type.id === AppCreator.ResizePoint.Type.SouthEast.id) {
                         if (this._target.getMinSize().width <= newWidth - deltaX) {
                             newWidth -= deltaX;
                         } else {
@@ -78,11 +78,11 @@
                     
                     self._dragStartX = self.getX();
                 }
-                if (self._dragStartY != self.getY()) {
+                if (self._dragStartY !== self.getY()) {
                     var deltaY = self._dragStartY - self.getY();
 
-                    if (self._type.id == AppCreator.ResizePoint.Type.NorthEast.id || 
-                        self._type.id == AppCreator.ResizePoint.Type.NorthWest.id) {
+                    if (self._type.id === AppCreator.ResizePoint.Type.NorthEast.id || 
+                        self._type.id === AppCreator.ResizePoint.Type.NorthWest.id) {
                         // constraint to minSize
                         if (this._target.getMinSize().height <= newHeight + deltaY) {
                             newHeight += deltaY;
@@ -128,7 +128,7 @@
         },
         /**
          * One from Enum ResizePoint.Type
-         * @param {Type}
+         * @param type {AppCreator.ResizePoint.Type} 
          */
         setType: function(type) {
             var deltaX = 0, deltaY = 0;
@@ -156,7 +156,7 @@
             
             this._type = type;
         }
-    }
+    };
     
     Kinetic.Global.extend(AppCreator.ResizePoint, Kinetic.Circle);
 })();

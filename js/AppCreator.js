@@ -54,16 +54,17 @@ var AppCreator = {};
                             var x = e.pageX - this.offsetLeft,
                                     y = e.pageY - this.offsetTop,
                                     B = new AppCreator.Element({
-                                'x': x,
-                                'y': y,
-                                width: 50,
-                                height: 200,
+                                'x': x - 50,
+                                'y': y - 5,
+                                width: 100,
+                                height: 30,
                                 draggable: true
                             });
 
                             self._layer.add(B);
                             self._layer.draw();
                             AppCreator.selectedTool = AppCreator.tools.Mouse;
+                            $('#toolbox .nav a')[0].click();
                             break;
                         }
                 }

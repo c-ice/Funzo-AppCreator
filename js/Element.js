@@ -17,7 +17,7 @@
             this._isSelected = false;
             this._resizePoints = [];
             this._minSize = {
-                width: 0,
+                width: 100,
                 height: this.attributesDrawHeight
             };
 
@@ -28,8 +28,8 @@
             this._border = new Kinetic.Rect({
                 x: 0,
                 y: 0,
-                width: 150,
-                height: 200,
+                width: this.getWidth(),
+                height: this.getHeight(),
                 fill: 'white',
                 stroke: 'black',
                 strokeWidth: 1,
@@ -81,7 +81,7 @@
                     fontFamily: 'Calibri',
                     fill: 'black',
                     align: 'center',
-                    width: 150
+                    width: this.getMinSize().width
                 }));
 
                 this.resizeWithNewMinWidth(this._title.getWidth());
@@ -172,10 +172,10 @@
                     canvasId: attr._id
                 };
             } else {
-                if (this._attributes[attribute.name].type != attribute.type) {
+                if (this._attributes[attribute.name].type !== attribute.type) {
                     this._attributes[attribute.name].type = attribute.type;
                     for (var i in this.getChildren()) {
-                        if (this.getChildren()[i]._id == this._attributes[attribute.name].canvasId) {
+                        if (this.getChildren()[i]._id === this._attributes[attribute.name].canvasId) {
                             this.getChildren()[i].setType(attribute.type);
                             this.resizeWithNewMinWidth(this.getChildren()[i].getWidth());
                             break;
@@ -195,10 +195,10 @@
 
             for (var i = 0; i < this.getChildren().length; i++) {
                 var child = this.getChildren()[i];
-                if (child.ACType == 'Attribute') {
+                if (child.ACType === 'Attribute') {
                     child.resizeToNewSize(newWidth);
                 }
-                else if (child.nodeType == 'Shape' && child.shapeType == 'Line') {
+                else if (child.nodeType === 'Shape' && child.shapeType === 'Line') {
                     var points = child.getPoints();
                     points[1].x = (newWidth ? newWidth : points[1].x);
                     child.setPoints(points);
@@ -218,10 +218,10 @@
 
                 for (var i = 0; i < this.getChildren().length; i++) {
                     var child = this.getChildren()[i];
-                    if (child.ACType == 'Attribute') {
+                    if (child.ACType === 'Attribute') {
                         child.resizeWithNewMinWidth(calculated);
                     }
-                    else if (child.nodeType == 'Shape' && child.shapeType == 'Line') {
+                    else if (child.nodeType === 'Shape' && child.shapeType === 'Line') {
                         var points = child.getPoints();
                         points[1].x = calculated;
                         child.setPoints(points);
