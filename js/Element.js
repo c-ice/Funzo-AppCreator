@@ -1,30 +1,30 @@
 
 (function() {
-    
+
     AppCreator.Element = function(config) {
         this._initElement(config);
     };
-    
+
     AppCreator.Element.prototype = {
         _initElement: function(config) {
             this.attributesDrawHeight = 19;
             this._title = null;
             this._attributes = {
-                length:0
+                length: 0
             };
             this._assocObjects = [];
             this.attributesPadding = 2;
             this._isSelected = false;
             this._resizePoints = [];
             this._minSize = {
-                width:0, 
-                height:this.attributesDrawHeight
-                };
+                width: 0,
+                height: this.attributesDrawHeight
+            };
 
             // call super constructor
             Kinetic.Group.call(this, config);
             this.ACType = 'Element';
-            
+
             this._border = new Kinetic.Rect({
                 x: 0,
                 y: 0,
@@ -33,24 +33,24 @@
                 fill: 'white',
                 stroke: 'black',
                 strokeWidth: 1,
-                shadowColor:'black',
-                shadowBlur:15,
-                shadowOffset:0,
-                shadowOpacity:0.6,
+                shadowColor: 'black',
+                shadowBlur: 15,
+                shadowOffset: 0,
+                shadowOpacity: 0.6,
                 shadowEnabled: false
             });
             this.add(this._border);
-            
+
             this._renderTitle(false);
             this.on('click', function() {
                 this.setSelected(true);
             });
-            
-            this.on('dragmove', function(){
-               var newX = Math.floor(this.getX() / AppCreator.gridSize) * AppCreator.gridSize;
-               var newY = Math.floor(this.getY() / AppCreator.gridSize) * AppCreator.gridSize;
-               this.setX(newX);
-               this.setY(newY);
+
+            this.on('dragmove', function() {
+                var newX = Math.floor(this.getX() / AppCreator.gridSize) * AppCreator.gridSize;
+                var newY = Math.floor(this.getY() / AppCreator.gridSize) * AppCreator.gridSize;
+                this.setX(newX);
+                this.setY(newY);
             });
         },
         getMinSize: function() {
@@ -59,7 +59,7 @@
         _renderTitle: function(exists) {
             if (exists) {
                 var titles = this.get('#title');
-            
+
                 if (titles.length > 0) {
                     titles[0].setText(this.title());
                 }
@@ -80,7 +80,7 @@
                     fontSize: 13,
                     fontFamily: 'Calibri',
                     fill: 'black',
-                    align: 'center', 
+                    align: 'center',
                     width: 150
                 }));
 
@@ -89,39 +89,38 @@
                 this.add(this._title);
             }
         },
-        
         title: function(title) {
             if (typeof title === 'string') {
                 this._title.setText(title);
-            } 
-            
+            }
+
             return this._title.getText();
-        }, 
+        },
         _createResizePoints: function() {
             if (!this._resizePoints ||
-                this._resizePoints.length < 4) {
+                    this._resizePoints.length < 4) {
                 this._resizePoints.push(
-                    new AppCreator.ResizePoint({
-                        type: AppCreator.ResizePoint.Type.NorthWest,
-                        target: this, 
-                        draggable: true
-                    }), 
-                    new AppCreator.ResizePoint({
-                        type: AppCreator.ResizePoint.Type.NorthEast,
-                        target: this, 
-                        draggable: true
-                    }),
-                    new AppCreator.ResizePoint({
-                        type: AppCreator.ResizePoint.Type.SouthEast,
-                        target: this, 
-                        draggable: true
-                    }),
-                    new AppCreator.ResizePoint({
-                        type: AppCreator.ResizePoint.Type.SouthWest,
-                        target: this, 
-                        draggable: true
-                    }));
-                    
+                        new AppCreator.ResizePoint({
+                    type: AppCreator.ResizePoint.Type.NorthWest,
+                    target: this,
+                    draggable: true
+                }),
+                new AppCreator.ResizePoint({
+                    type: AppCreator.ResizePoint.Type.NorthEast,
+                    target: this,
+                    draggable: true
+                }),
+                new AppCreator.ResizePoint({
+                    type: AppCreator.ResizePoint.Type.SouthEast,
+                    target: this,
+                    draggable: true
+                }),
+                new AppCreator.ResizePoint({
+                    type: AppCreator.ResizePoint.Type.SouthWest,
+                    target: this,
+                    draggable: true
+                }));
+
                 for (var i in this._resizePoints) {
                     this.getParent().add(this._resizePoints[i]);
                 }
@@ -130,7 +129,7 @@
         setSelected: function(selected) {
             if (selected && !this._isSelected) {
                 this._createResizePoints();
-                    
+
                 for (var i in this._resizePoints) {
                     this._resizePoints[i].show();
                 }
@@ -138,7 +137,7 @@
                 this._border.setShadowEnabled(true);
                 this.getParent().draw();
             }
-            
+
             if (!selected && this._isSelected) {
                 for (var i in this._resizePoints) {
                     this._resizePoints[i].hide();
@@ -146,11 +145,11 @@
                 this._border.setShadowEnabled(false);
                 this.getParent().draw();
             }
-            
+
             this._isSelected = selected;
         },
         connectToElement: function(element, withLine) {
-            
+
         },
         addAttribute: function(attribute) {
             if (typeof this._attributes[attribute.name] === 'undefined') {
@@ -163,7 +162,7 @@
                 });
 
                 this._minSize.height = (attr.getY() + attr.getHeight()) + this.attributesDrawHeight;
-                
+
                 this.resizeWithNewMinWidth(attr.getWidth());
 
                 this.add(attr);
@@ -184,7 +183,7 @@
                     }
                 }
             }
-            
+
             this.draw();
         },
         resizeToNewSize: function(newWidth, newHeight) {
@@ -193,8 +192,8 @@
             }
             if (newHeight)
                 this.setHeight(newHeight);
-            
-            for(var i = 0; i < this.getChildren().length; i++) {
+
+            for (var i = 0; i < this.getChildren().length; i++) {
                 var child = this.getChildren()[i];
                 if (child.ACType == 'Attribute') {
                     child.resizeToNewSize(newWidth);
@@ -208,16 +207,16 @@
                     child.setHeight(newHeight);
                 }
             }
-            
+
             this.fire('resize');
         },
         resizeWithNewMinWidth: function(newMinWidth) {
             var calculated = newMinWidth;
-            if (this.getWidth() < newMinWidth) {                
+            if (this.getWidth() < newMinWidth) {
                 this.setWidth(calculated);
                 this._minSize.width = newMinWidth;
-            
-                for(var i = 0; i < this.getChildren().length; i++) {
+
+                for (var i = 0; i < this.getChildren().length; i++) {
                     var child = this.getChildren()[i];
                     if (child.ACType == 'Attribute') {
                         child.resizeWithNewMinWidth(calculated);
@@ -231,10 +230,10 @@
                     }
                 }
             }
-            
+
             return calculated;
         }
     }
-    
+
     Kinetic.Global.extend(AppCreator.Element, Kinetic.Group);
 })();
