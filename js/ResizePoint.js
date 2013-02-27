@@ -36,11 +36,11 @@
             self.ACType = 'ResizePoint';
             
             self.on('mouseover', function(){
-                document.body.style.cursor = self._type.value;
+                AppCreator.setCursorTo(self._type.value);
             });
             
             self.on('mouseout', function(){
-                document.body.style.cursor = 'default';
+                AppCreator.defaultCursor();
             });
             
             self.on('dragstart', function() {

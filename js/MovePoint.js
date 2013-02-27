@@ -55,14 +55,14 @@
             });
 
             self.on('mouseover', function() {
-                document.body.style.cursor = 'move';
+                AppCreator.setCursorTo('move');
             });
 
             self.on('mouseout', function() {
-                document.body.style.cursor = 'default';
+                AppCreator.defaultCursor();
             });
 
-            self.on('dragstart', function() {
+            self.on('dragstart', function(e) {
                 self._dragStartX = self.getX();
                 self._dragStartY = self.getY();
             });
@@ -73,7 +73,8 @@
                 self.snapToGrid();
             });
 
-            self.on('dragmove', function() {
+            self.on('dragmove', function(e) {
+                //e.preventDefault();
                 if (self.getIsStatic() && self.getTarget()) {
                     var pos = {
                         'x': 0,

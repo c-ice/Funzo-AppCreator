@@ -1,0 +1,14 @@
+/* 
+    Document   : main
+    Created on : 27.2.2013, 20:25:42
+    Author     : Lukas Chudy
+    Description:
+        Purpose of the stylesheet follows.
+*/
+
+
+
+#container {
+    border: 1px solid #d4d4d4;
+    overflow: auto;
+}

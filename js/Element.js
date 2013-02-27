@@ -45,10 +45,20 @@
             this.on('click', function() {
                 this.setSelected(true);
             });
+            
+            this.on('dragstart', function(e) {
+                e.preventDefault();
+                AppCreator.setCursorTo('move');
+            });
+            
+            this.on('dragend', function(e) {
+                //e.preventDefault();
+                AppCreator.defaultCursor();
+            });
 
             this.on('dragmove', function() {
-                var newX = Math.floor(this.getX() / AppCreator.gridSize) * AppCreator.gridSize;
-                var newY = Math.floor(this.getY() / AppCreator.gridSize) * AppCreator.gridSize;
+                var newX = Math.floor(this.getX() / AppCreator.gridSize) * AppCreator.gridSize,
+                newY = Math.floor(this.getY() / AppCreator.gridSize) * AppCreator.gridSize;
                 this.setX(newX);
                 this.setY(newY);
             });

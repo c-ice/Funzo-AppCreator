@@ -12,8 +12,18 @@ var AppCreator = {};
         AddElement: 3
     };
 
+    AppCreator.setCursorTo = function(cursorType) {
+        document.body.style.cursor = cursorType;
+//        document.onselectstart = function() {
+//            return false;
+//        };
+    };
+    AppCreator.defaultCursor = function() {
+        document.body.style.cursor = 'default';
+    };
+
     AppCreator.gridSize = 5;
-    AppCreator.selectedTool = AppCreator.tools.AddElement;
+    AppCreator.selectedTool = AppCreator.tools.Mouse;
     AppCreator.clickedElement = null;
     // class instance
     AppCreator.Root = function() {
@@ -24,8 +34,8 @@ var AppCreator = {};
             var self = this;
             self._stage = new Kinetic.Stage({
                 container: 'container',
-                width: 878,
-                height: 600
+                width: 1920,
+                height: 1080
             });
 
             self._gridSize = 5;
@@ -35,6 +45,10 @@ var AppCreator = {};
             self._stage.add(self._linesLayer);
             self._stage.add(self._layer);
 
+            // prevent cursor changing on move
+            self._stage.content.addEventListener("mousedown", function(e) {
+                e.preventDefault();
+            }, false);
             self._stage.content.onclick = function(e) {
                 switch (AppCreator.selectedTool) {
                     case AppCreator.tools.Mouse:
