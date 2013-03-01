@@ -78,7 +78,7 @@ var AppCreator = {};
                             self._layer.add(B);
                             self._layer.draw();
                             AppCreator.selectedTool = AppCreator.tools.Mouse;
-                            $('#toolbox .nav a')[0].click();
+                            $('#toolbox button')[0].click();
                             break;
                         }
                 }
