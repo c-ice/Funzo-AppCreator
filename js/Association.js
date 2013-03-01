@@ -12,8 +12,9 @@
 
             Kinetic.Line.call(self, config);
             this.ACType = 'Association';
-            self.on('click', function() {
-
+            self.on('mousedown', function(e) {
+                // TODO: fix
+                self.addMovePoint(e.x, e.y);
             });
         },
         addMovePoint: function(x, y) {
@@ -187,6 +188,20 @@
             }
 
             canvas.stroke(this);
+        },
+        drawHitFunc: function(canvas) {
+            var points = this.getPoints(), length = points.length, context = canvas.getContext();
+            context.beginPath();
+            context.lineWidth = 10;
+            context.moveTo(points[0].getX(), points[0].getY());
+
+            for (var n = 1; n < length; n++) {
+                var point = points[n];
+                context.lineTo(point.getX(), point.getY());
+            }
+            this.setStrokeWidth(10);
+            canvas.stroke(this);
+            this.setStrokeWidth(1);
         }
     };
 
