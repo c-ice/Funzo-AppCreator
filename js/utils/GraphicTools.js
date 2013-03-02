@@ -62,7 +62,7 @@
         var b = AppCreator.GraphicTools.getCorners(draggedObject);
         var rightSide = 0, leftSide = 0;
         var upSide = 0, downSide = 0;
-        
+
         for (var i = 0; i < a.length; i++) {
             if (a[i].x < b[0].x) {
                 rightSide++;
@@ -77,21 +77,95 @@
                 downSide++;
             }
         }
-        
+
         var result = 0;
         if (rightSide === 4) {
             result = result | AppCreator.GraphicTools.Position.East;
         } else if (leftSide === 4) {
             result = result | AppCreator.GraphicTools.Position.West;
         }
-        
+
         if (upSide === 4) {
             result = result | AppCreator.GraphicTools.Position.South;
         } else if (downSide === 4) {
             result = result | AppCreator.GraphicTools.Position.North;
         }
-        
+
         return result;
+    };
+
+    /**
+     * 
+     * @param {Point} from
+     * @param {Point} to
+     * @param {Point} testPos
+     * @param {int} nearTolerance
+     * @returns {@exp;r@call;intersectsLine}
+     */
+    AppCreator.GraphicTools.isPointNearSegment = function(from, to, testPos, nearTolerance) {
+        var r = new Kinetic.Rect({
+            x: testPos.x - nearTolerance / 2,
+            y: testPos.y - nearTolerance / 2,
+            width: nearTolerance,
+            height: nearTolerance
+        });
+        return r.intersectsLine(from.x, from.y, to.x, to.y);
+    };
+
+    /**
+     * 
+     * @param {Point} from
+     * @param {Point} testPos
+     * @param {int} nearTolerance
+     * @returns {@exp;AppCreator@pro;GraphicTools@call;rectangleIntersection}
+     */
+    AppCreator.GraphicTools.isPointNearPoint = function(from, testPos, nearTolerance) {
+        var r1 = {
+            x: from.x - nearTolerance / 2,
+            y: from.y - nearTolerance / 2,
+            width: nearTolerance,
+            height: nearTolerance
+        };
+
+        var r2 = {x: testPos.x, y: testPos.y, width: 1, height: 1};
+        return AppCreator.GraphicTools.rectangleIntersection(r1, r2);
+    };
+    /**
+     * // Copied from pnapi Rectangle.java
+     * @param {Rectangle} r1
+     * @param {Rectangle} r2
+     * @returns {Boolean}
+     */
+    AppCreator.GraphicTools.rectangleIntersection = function(r1, r2) {
+        var tw = r2.width, th = r2.height, rw = r1.width, rh = r1.height;
+        if (rw <= 0 || rh <= 0 || tw <= 0 || th <= 0) {
+            return false;
+        }
+        var tx = r2.x, ty = r2.y, rx = r1.x, ry = r1.y;
+        rw += rx;
+        rh += ry;
+        tw += tx;
+        th += ty;
+        //      overflow || intersect
+        return ((rw < rx || rw > tx) &&
+                (rh < ry || rh > ty) &&
+                (tw < tx || tw > rx) &&
+                (th < ty || th > ry));
+    };
+    
+    /**
+     * |AB|
+     * @param {Point} p1
+     * @param {point} p2
+     * @returns {@exp;Math@call;sqrt}
+     */
+    AppCreator.GraphicTools.pointToPointDistance = function(p1, p2) {
+        return Math.sqrt(Math.pow(p1.x - p2.x, 2) + Math.pow(p1.y - p2.y, 2));
+    };
+    
+    AppCreator.GraphicTools.pointToLineDistance = function(a, b, p) {
+        var normalLength = AppCreator.GraphicTools.pointToPointDistance(a, b);
+        return Math.abs((p.x - a.x) * (b.y - a.y) - (p.y - a.y) * (b.x - a.x)) / normalLength;
     };
 
 

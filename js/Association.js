@@ -13,19 +13,72 @@
             Kinetic.Line.call(self, config);
             this.ACType = 'Association';
             self.on('mousedown', function(e) {
-                // TODO: fix
-                self.addMovePoint(e.x, e.y);
+                var point = self.addMovePoint(e.layerX, e.layerY);
+                point.getParent().draw();
+                point.fire('mousedown');
             });
         },
         addMovePoint: function(x, y) {
-            var points = this.getPoints(), point = new AppCreator.MovePoint(
+            var points = this.getPoints(), originPoint = {'x': x, 'y': y},
+            innerPoints = [],
+                    point = new AppCreator.MovePoint(
                     {
-                        owner: this,
+                        'owner': this,
                         'x': x,
                         'y': y
                     });
 
-            points.push(point);
+            if (points.length < 2) {
+                points.push(point);
+            } else {
+                // calculate point index
+                // TODO: pracuj nefunguje spravne prerob ked budes ciary tahat priamociaro
+                for (var i = 1; i < points.length; i++) {
+                    innerPoints.push({'index': i, "len": AppCreator.GraphicTools.pointToLineDistance(
+                                {"x": points[i-1].getX(), "y": points[i-1].getY()},
+                                {"x": points[i].getX(), "y": points[i].getY()},
+                        {'x': x, 'y': y})});
+                }
+                if (innerPoints.length > 0) {
+                    innerPoints.sort(function(a, b) {
+                        return a.len - b.len;
+                    });
+                    points.splice(innerPoints[0].index , 0, point);
+                } else {
+                    points.splice(points.length - 1, 0, point);
+                }
+//                for (var i = 0; i < points.length; i++) {
+//                    innerPoints.push({'index': i, "len": AppCreator.GraphicTools.pointToPointDistance(
+//                                points[i].getPosition(),
+//                                originPoint
+//                                )});
+//                }
+//                if (innerPoints.length > 0) {
+//                    innerPoints.sort(function(a, b) {
+//                        return a.len - b.len;
+//                    });
+//
+//                    var len1 = (innerPoints[0].index - 1 < 0)? 
+//
+//                    if (AppCreator.GraphicTools.pointToLineDistance(
+//                            points[innerPoints[0].index].getPosition(),
+//                            points[innerPoints[0].index + 1].getPosition(),
+//                            originPoint)
+//                            >
+//                            AppCreator.GraphicTools.pointToLineDistance(
+//                            points[innerPoints[0].index].getPosition(),
+//                            points[innerPoints[0].index - 1].getPosition(),
+//                            originPoint)) {
+//                                
+//                                
+//                    } else {
+//
+//                    }
+//                    points.splice(innerPoints[0].index, 0, point);
+//                } else {
+//                    points.splice(points.length - 1, 0, point);
+//                }
+            }
             this.setPoints(points);
 
             if (this.getParent()) {
@@ -35,6 +88,43 @@
             }
 
             return point;
+        },
+        addOrGetBreakPoint: function(newPoint) {
+            for (var breakPoint in breakPoints) {
+                if (GraphicsTools.isPointNearPoint(newPoint, breakPoint, nearTolerance)) {
+                    return breakPoint;
+                }
+            }
+
+            if (breakPoints.isEmpty()) {
+                breakPoints.add(newPoint);
+            } else {
+                var previous = getStart();
+                for (var i = 0; i < breakPoints.size(); i++) {
+                    if (GraphicsTools.isPointNearSegment(previous, breakPoints.get(i), newPoint, nearTolerance)) {
+                        breakPoints.add(i, newPoint);
+                        return newPoint;
+                    }
+                    previous = breakPoints.get(i);
+                }
+                if (GraphicsTools.isPointNearSegment(previous, getEnd(), newPoint, nearTolerance)) {
+                    breakPoints.add(newPoint);
+                }
+            }
+            return newPoint;
+        },
+        cleanupUnecessaryBreakPoints: function() {
+            var previous = getStart();
+            for (var i = 0; i < breakPoints.size(); i++) {
+                var current = breakPoints.get(i);
+                var next = i < (breakPoints.size() - 1) ? breakPoints.get(i + 1) : getEnd();
+                var tolerance = Math.round(0.1 * previous.distance(next));
+                if (GraphicsTools.isPointNearSegment(previous, next, current, tolerance)) {
+                    breakPoints.remove(i--);
+                } else {
+                    previous = breakPoints.get(i);
+                }
+            }
         },
         setTarget: function(target) {
             var self = this, x = 0, y = 0, point;
