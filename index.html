@@ -60,7 +60,7 @@
             </div>
             <script>
                 $('.btn-toolbar button').click(function(e) {
-                    AppCreator.selectedTool = $(this).data('tool');
+                    instance.setSelectedTool($(this).data('tool'));
                 });
             </script>
         </div>
@@ -136,9 +136,7 @@
                     B.addAttribute({name: "Transaction", type: 'String'});
 
                     var assoc = new AppCreator.Association({target: B,
-                        source: A,
-                        stroke: 'black',
-                        strokeWidth: 1});
+                        source: A});
 
                     instance.getLinesLayer().add(assoc);
                     instance.getLinesLayer().draw();

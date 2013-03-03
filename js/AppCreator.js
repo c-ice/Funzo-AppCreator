@@ -24,7 +24,9 @@ var AppCreator = {};
 
     AppCreator.gridSize = 5;
     AppCreator.selectedTool = AppCreator.tools.Mouse;
+
     AppCreator.clickedElement = null;
+    AppCreator.instance = null;
     // class instance
     AppCreator.Root = function() {
         this._init();
@@ -38,6 +40,9 @@ var AppCreator = {};
                 height: 1080
             });
 
+            AppCreator.instance = self;
+
+            self.currentAssoc = null;
             self._gridSize = 5;
             self._layer = new Kinetic.Layer();
             self._linesLayer = new Kinetic.Layer();
@@ -49,18 +54,11 @@ var AppCreator = {};
             self._stage.content.addEventListener("mousedown", function(e) {
                 e.preventDefault();
             }, false);
-            self._stage.content.onclick = function(e) {
+
+            self._stage.content.addEventListener("click", self._mouseToolClickEventListener, false);
+
+            self._stage.content.onmousedown = function(e) {
                 switch (AppCreator.selectedTool) {
-                    case AppCreator.tools.Mouse:
-                        {
-                            var childs = self._layer.getChildren();
-                            for (var i in childs) {
-                                if (childs[i].ACType === 'Element') {
-                                    childs[i].setSelected(false);
-                                }
-                            }
-                            break;
-                        }
                     case AppCreator.tools.AddElement:
                         {
                             e = e || window.event;
@@ -79,6 +77,46 @@ var AppCreator = {};
                             self._layer.draw();
                             AppCreator.selectedTool = AppCreator.tools.Mouse;
                             $('#toolbox button')[0].click();
+                            B.fire('mousedown');
+                            break;
+                        }
+                    case AppCreator.tools.Association:
+                        {
+                            e = e || window.event;
+
+                            var i = 0, pos = {x: e.layerX, y: e.layerY},
+                            intersects = self._layer.getIntersections(pos);
+
+                            for (i in intersects) {
+                                if (intersects[i].getParent().ACType === 'Element') {
+                                    if (!self.currentAssoc) {
+                                        self.currentAssoc = new AppCreator.Association({
+                                            'source': intersects[i].getParent()
+                                        });
+
+                                        self._linesLayer.add(self.currentAssoc);
+
+                                        self.currentAssoc.addMovePoint(pos);
+                                        this.addEventListener('mousemove', self._assocMouseMoveEventListener, false);
+                                    } else {
+                                        if (intersects[i] !== self.currentAssoc.getSource()) {
+                                            this.removeEventListener('mousemove', self._assocMouseMoveEventListener, false);
+                                            self.currentAssoc.getPoints().pop().destroy();
+                                            self.currentAssoc.setTarget(intersects[i].getParent());
+                                            self.currentAssoc = null;
+                                        }
+                                    }
+
+                                    break;
+                                }
+                            }
+
+                            // ak nic netrafil a zaroven existuje tahana ciara
+                            if (intersects.length === 0 &&
+                                    self.currentAssoc) {
+                                self.currentAssoc.addMovePoint(pos);
+                            }
+
                             break;
                         }
                 }
@@ -92,6 +130,44 @@ var AppCreator = {};
         },
         getLinesLayer: function() {
             return this._linesLayer;
+        },
+        setSelectedTool: function(tool) {
+            if (tool === AppCreator.selectedTool) {
+                return;
+            }
+
+            if (tool === AppCreator.tools.Association ||
+                    AppCreator.selectedTool === AppCreator.tools.Association)
+            {
+                var register = tool === AppCreator.tools.Association;
+
+                var childs = this._layer.getChildren();
+                for (var i in childs) {
+                    if (childs[i].ACType === 'Element') {
+                        childs[i].setSelected(false);
+                        childs[i].setDraggable(!register);
+                    }
+                }
+            }
+
+            AppCreator.selectedTool = tool;
+        },
+        _assocMouseMoveEventListener: function(e) {
+            var points = AppCreator.instance.currentAssoc.getPoints();
+
+            points[points.length - 1].setX(e.layerX);
+            points[points.length - 1].setY(e.layerY);
+            AppCreator.instance.currentAssoc.getParent().draw();
+        },
+        _mouseToolClickEventListener: function() {
+            if (AppCreator.selectedTool === AppCreator.tools.Mouse) {
+                var childs = AppCreator.instance._layer.getChildren();
+                for (var i in childs) {
+                    if (childs[i].ACType === 'Element') {
+                        childs[i].setSelected(false);
+                    }
+                }
+            }
         }
     };
 })();

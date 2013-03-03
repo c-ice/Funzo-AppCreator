@@ -9,26 +9,31 @@
             var self = this;
             self._target = null;
             self._source = null;
+            self.setDefaultAttrs({
+                stroke: 'black',
+                strokeWidth: 1
+            });
 
             Kinetic.Line.call(self, config);
             this.ACType = 'Association';
             self.on('mousedown', function(e) {
-                var point = self.addMovePoint(e.layerX, e.layerY);
+                var point = self.addMovePoint([e.layerX, e.layerY]);
                 point.getParent().draw();
                 point.fire('mousedown');
             });
         },
-        addMovePoint: function(x, y) {
-            var points = this.getPoints(), originPoint = {'x': x, 'y': y},
+        addMovePoint: function() {
+            var points = this.getPoints(), 
+                    pos = Kinetic.Type._getXY([].slice.call(arguments)),
             innerPoints = [],
                     point = new AppCreator.MovePoint(
                     {
                         'owner': this,
-                        'x': x,
-                        'y': y
+                        'x': pos.x,
+                        'y': pos.y
                     });
 
-            if (points.length < 2) {
+            if (points.length < 2 || this._target === 'undefined') {
                 points.push(point);
             } else {
                 // calculate point index
@@ -37,7 +42,7 @@
                     innerPoints.push({'index': i, "len": AppCreator.GraphicTools.pointToLineDistance(
                                 {"x": points[i-1].getX(), "y": points[i-1].getY()},
                                 {"x": points[i].getX(), "y": points[i].getY()},
-                        {'x': x, 'y': y})});
+                        pos)});
                 }
                 if (innerPoints.length > 0) {
                     innerPoints.sort(function(a, b) {
@@ -151,7 +156,7 @@
 
             y = self._target.getHeight() / 2 + self._target.getY();
 
-            point = self.addMovePoint(x, y);
+            point = self.addMovePoint([x, y]);
             point.setIsStatic(true);
             point.setTarget(self._target);
 
@@ -188,9 +193,9 @@
                 });
             }
 
-            y = self._source.getHeight() / 2 + self._target.getY();
+            y = self._source.getHeight() / 2 + self._source.getY();
 
-            point = self.addMovePoint(x, y);
+            point = self.addMovePoint([x, y]);
             point.setIsStatic(true);
             point.setTarget(self._source);
 
