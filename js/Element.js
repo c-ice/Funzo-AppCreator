@@ -66,6 +66,14 @@
         getMinSize: function() {
             return this._minSize;
         },
+        _renderAddAttrButton: function(){
+            var btn = null, self = this;
+            
+            
+            
+            
+            return btn;
+        },
         _renderTitle: function(exists) {
             if (exists) {
                 var titles = this.get('#title');
@@ -157,9 +165,6 @@
             }
 
             this._isSelected = selected;
-        },
-        connectToElement: function(element, withLine) {
-
         },
         addAttribute: function(attribute) {
             if (typeof this._attributes[attribute.name] === 'undefined') {

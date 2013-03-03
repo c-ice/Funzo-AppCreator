@@ -22,7 +22,7 @@ var AppCreator = {};
         document.body.style.cursor = 'default';
     };
 
-    AppCreator.gridSize = 5;
+    AppCreator.gridSize = 1;
     AppCreator.selectedTool = AppCreator.tools.Mouse;
 
     AppCreator.clickedElement = null;

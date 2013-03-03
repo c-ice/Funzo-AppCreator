@@ -71,6 +71,7 @@
                 self._dragStartX = null;
                 self._dragStartY = null;
                 self.snapToGrid();
+                self.getOwner().cleanupUnecessaryBreakPoints();
             });
 
             self.on('dragmove', function(e) {

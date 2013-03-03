@@ -23,9 +23,9 @@
             });
         },
         addMovePoint: function() {
-            var points = this.getPoints(), 
+            var points = this.getPoints(),
                     pos = Kinetic.Type._getXY([].slice.call(arguments)),
-            innerPoints = [],
+                    innerPoints = [],
                     point = new AppCreator.MovePoint(
                     {
                         'owner': this,
@@ -40,15 +40,15 @@
                 // TODO: pracuj nefunguje spravne prerob ked budes ciary tahat priamociaro
                 for (var i = 1; i < points.length; i++) {
                     innerPoints.push({'index': i, "len": AppCreator.GraphicTools.pointToLineDistance(
-                                {"x": points[i-1].getX(), "y": points[i-1].getY()},
-                                {"x": points[i].getX(), "y": points[i].getY()},
+                                {"x": points[i - 1].getX(), "y": points[i - 1].getY()},
+                        {"x": points[i].getX(), "y": points[i].getY()},
                         pos)});
                 }
                 if (innerPoints.length > 0) {
                     innerPoints.sort(function(a, b) {
                         return a.len - b.len;
                     });
-                    points.splice(innerPoints[0].index , 0, point);
+                    points.splice(innerPoints[0].index, 0, point);
                 } else {
                     points.splice(points.length - 1, 0, point);
                 }
@@ -94,6 +94,11 @@
 
             return point;
         },
+        /**
+         * TODO: prerob z Java na js
+         * @param {type} newPoint
+         * @returns {unresolved}
+         */
         addOrGetBreakPoint: function(newPoint) {
             for (var breakPoint in breakPoints) {
                 if (GraphicsTools.isPointNearPoint(newPoint, breakPoint, nearTolerance)) {
@@ -119,17 +124,35 @@
             return newPoint;
         },
         cleanupUnecessaryBreakPoints: function() {
-            var previous = getStart();
-            for (var i = 0; i < breakPoints.size(); i++) {
-                var current = breakPoints.get(i);
-                var next = i < (breakPoints.size() - 1) ? breakPoints.get(i + 1) : getEnd();
-                var tolerance = Math.round(0.1 * previous.distance(next));
-                if (GraphicsTools.isPointNearSegment(previous, next, current, tolerance)) {
-                    breakPoints.remove(i--);
-                } else {
-                    previous = breakPoints.get(i);
+            var points = this.getPoints(), i = 1,
+                    tolerance = AppCreator.GraphicTools.tolerance / 2;
+
+            if (points.length > 2) {
+                for (i; i < points.length - 1; i++) {
+                    // ak su vsetky v jednej rovine zmazat stredny
+                    if (points[i - 1].getY() - tolerance < points[i].getY() &&
+                            points[i - 1].getY() + tolerance > points[i].getY() &&
+                            points[i + 1].getY() - tolerance < points[i].getY() &&
+                            points[i + 1].getY() + tolerance > points[i].getY()) {
+                        // vyhodit zmazazt
+                        points.splice(i, 1)[0].destroy();
+                        i--;
+                    }
                 }
+
+                this.getParent().draw();
             }
+//            var previous = getStart();
+//            for (var i = 0; i < breakPoints.size(); i++) {
+//                var current = breakPoints.get(i);
+//                var next = i < (breakPoints.size() - 1) ? breakPoints.get(i + 1) : getEnd();
+//                var tolerance = Math.round(0.1 * previous.distance(next));
+//                if (GraphicsTools.isPointNearSegment(previous, next, current, tolerance)) {
+//                    breakPoints.remove(i--);
+//                } else {
+//                    previous = breakPoints.get(i);
+//                }
+//            }
         },
         setTarget: function(target) {
             var self = this, x = 0, y = 0, point;
@@ -171,7 +194,7 @@
             return this._target;
         },
         setSource: function(source) {
-            var self = this, x = 0, y = 0, point;
+            var self = this, x = 0, y = 0, xOffset, point;
             // remove listner
             if (self._source) {
                 self._source.off('dragmove');
@@ -179,20 +202,18 @@
             }
             self._source = source;
 
-            if (self.getTarget() && self.getTarget().getX() > self._source.getX()) {
-                x = self._source.getWidth() + self._source.getX();
-                this.setSourceOffset({
-                    'x': self._source.getWidth(),
-                    'y': self._source.getHeight() / 2
-                });
+            if (self.getTarget()) {
+                xOffset = self.getTarget().getX() > self._source.getX() ? self._source.getWidth() : 0;
             } else {
-                x = self._source.getX();
-                this.setSourceOffset({
-                    'x': 0,
-                    'y': self._source.getHeight() / 2
-                });
+                xOffset = self._source.getWidth();
             }
 
+            this.setSourceOffset({
+                'x': xOffset,
+                'y': self._source.getHeight() / 2
+            });
+
+            x = self._source.getX() + xOffset;
             y = self._source.getHeight() / 2 + self._source.getY();
 
             point = self.addMovePoint([x, y]);
