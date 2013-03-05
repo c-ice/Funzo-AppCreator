@@ -20,6 +20,7 @@
                 width: 100,
                 height: this.attributesDrawHeight
             };
+            this._addAttrButton = null;
 
             // call super constructor
             Kinetic.Group.call(this, config);
@@ -45,20 +46,22 @@
             this.on('click', function() {
                 this.setSelected(true);
             });
-            
+
             this.on('dragstart', function(e) {
                 e.preventDefault();
                 AppCreator.setCursorTo('move');
             });
-            
+
             this.on('dragend', function(e) {
                 //e.preventDefault();
                 AppCreator.defaultCursor();
             });
 
+            this._renderAddAttrButton();
+
             this.on('dragmove', function() {
                 var newX = Math.floor(this.getX() / AppCreator.gridSize) * AppCreator.gridSize,
-                newY = Math.floor(this.getY() / AppCreator.gridSize) * AppCreator.gridSize;
+                        newY = Math.floor(this.getY() / AppCreator.gridSize) * AppCreator.gridSize;
                 this.setX(newX);
                 this.setY(newY);
             });
@@ -66,13 +69,49 @@
         getMinSize: function() {
             return this._minSize;
         },
-        _renderAddAttrButton: function(){
-            var btn = null, self = this;
-            
-            
-            
-            
-            return btn;
+        _renderAddAttrButton: function() {
+            var self = this, image = AppCreator.Images.getImage("plusButton");
+
+            image.addEventListener('load', function() {
+                var btn = new Kinetic.Image({
+                    'image': image,
+                    'x': self.getWidth() / 2 - 13,
+                    'y': self.getHeight() - 5,
+                    'width': 26,
+                    'height': 26,
+                    'opacity': 0.5,
+                    'scale': 0.9
+                });
+
+                btn.on('mouseenter', function() {
+                    this.move([0, 5]);
+                    this.setOpacity(1);
+                    self.getParent().draw();
+                });
+                btn.on('mouseout', function() {
+
+                    this.move([0, -5]);
+                    this.setOpacity(0.5);
+                    self.getParent().draw();
+                });
+
+                btn.on('click', function() {
+                    self.addAttribute({
+                        name: "Test",
+                        type: "Button"
+                    });
+                });
+
+                self.add(btn);
+                self._addAttrButton = btn;
+                self.on('resize', function(deltaSize) {
+                    btn.move({
+                        x: deltaSize.width / 2,
+                        y: deltaSize.height
+                    });
+                });
+                self.getParent().draw();
+            });
         },
         _renderTitle: function(exists) {
             if (exists) {
@@ -202,11 +241,15 @@
             this.draw();
         },
         resizeToNewSize: function(newWidth, newHeight) {
+            var delta = {width: 0, height: 0};
             if (newWidth) {
+                delta.width = newWidth - this.getWidth();
                 this.setWidth(newWidth);
             }
-            if (newHeight)
+            if (newHeight) {
+                delta.height = newHeight - this.getHeight();
                 this.setHeight(newHeight);
+            }
 
             for (var i = 0; i < this.getChildren().length; i++) {
                 var child = this.getChildren()[i];
@@ -218,12 +261,16 @@
                     points[1].x = (newWidth ? newWidth : points[1].x);
                     child.setPoints(points);
                 } else {
-                    child.setWidth(newWidth);
-                    child.setHeight(newHeight);
+                    if (child.nodeType === 'Shape' && child.shapeType === 'Image') {
+                        // nothing
+                    } else {
+                        child.setWidth(newWidth);
+                        child.setHeight(newHeight);
+                    }
                 }
             }
 
-            this.fire('resize');
+            this.fire('resize', delta);
         },
         resizeWithNewMinWidth: function(newMinWidth) {
             var calculated = newMinWidth;
@@ -241,7 +288,11 @@
                         points[1].x = calculated;
                         child.setPoints(points);
                     } else {
-                        child.setWidth(calculated);
+                        if (child.nodeType === 'Shape' && child.shapeType === 'Image') {
+                            // nothing
+                        } else {
+                            child.setWidth(calculated);
+                        }
                     }
                 }
             }
