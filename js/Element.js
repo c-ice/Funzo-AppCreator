@@ -76,7 +76,7 @@
                 var btn = new Kinetic.Image({
                     'image': image,
                     'x': self.getWidth() / 2 - 13,
-                    'y': self.getHeight() - 5,
+                    'y': self.getHeight() - 6,
                     'width': 26,
                     'height': 26,
                     'opacity': 0.5,
@@ -84,13 +84,13 @@
                 });
 
                 btn.on('mouseenter', function() {
-                    this.move([0, 5]);
+                    this.move([0, 3]);
                     this.setOpacity(1);
                     self.getParent().draw();
                 });
                 btn.on('mouseout', function() {
 
-                    this.move([0, -5]);
+                    this.move([0, -3]);
                     this.setOpacity(0.5);
                     self.getParent().draw();
                 });
