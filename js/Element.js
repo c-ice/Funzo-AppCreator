@@ -111,6 +111,7 @@
                     });
                 });
                 self.getParent().draw();
+                self._addAttrButton = btn;
             });
         },
         _renderTitle: function(exists) {
