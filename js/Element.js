@@ -70,49 +70,54 @@
             return this._minSize;
         },
         _renderAddAttrButton: function() {
-            var self = this, image = AppCreator.Images.getImage("plusButton");
-
-            image.addEventListener('load', function() {
-                var btn = new Kinetic.Image({
-                    'image': image,
-                    'x': self.getWidth() / 2 - 13,
-                    'y': self.getHeight() - 6,
-                    'width': 26,
-                    'height': 26,
-                    'opacity': 0.5,
-                    'scale': 0.9
-                });
-
-                btn.on('mouseenter', function() {
-                    this.move([0, 3]);
-                    this.setOpacity(1);
-                    self.getParent().draw();
-                });
-                btn.on('mouseout', function() {
-
-                    this.move([0, -3]);
-                    this.setOpacity(0.5);
-                    self.getParent().draw();
-                });
-
-                btn.on('click', function() {
-                    self.addAttribute({
-                        name: "Test",
-                        type: "Button"
-                    });
-                });
-
-                self.add(btn);
-                self._addAttrButton = btn;
-                self.on('resize', function(deltaSize) {
-                    btn.move({
-                        x: deltaSize.width / 2,
-                        y: deltaSize.height
-                    });
-                });
-                self.getParent().draw();
-                self._addAttrButton = btn;
+            var self = this, image = AppCreator.Images.getImage("plusButton"),
+                    btn = new Kinetic.Image({
+                'x': self.getWidth() / 2 - 13,
+                'y': self.getHeight() - 6,
+                'width': 26,
+                'height': 26,
+                'opacity': 0.5,
+                'scale': 0.9
             });
+
+            btn.on('mouseenter', function() {
+                this.move([0, 3]);
+                this.setOpacity(1);
+                self.getParent().draw();
+            });
+            btn.on('mouseout', function() {
+
+                this.move([0, -3]);
+                this.setOpacity(0.5);
+                self.getParent().draw();
+            });
+
+            btn.on('click', function() {
+                self.addAttribute({
+                    name: "Test",
+                    type: "Button"
+                });
+            });
+
+            self.add(btn);
+            self._addAttrButton = btn;
+            self.on('resize', function(deltaSize) {
+                btn.move({
+                    x: deltaSize.width / 2,
+                    y: deltaSize.height
+                });
+            });
+
+            self._addAttrButton = btn;
+
+            if (!image.complete) {
+                image.addEventListener('load', function() {
+                    btn.setImage(image);
+                    self.getParent().draw();
+                });
+            } else {
+                btn.setImage(image);
+            }
         },
         _renderTitle: function(exists) {
             if (exists) {
@@ -274,7 +279,7 @@
             this.fire('resize', delta);
         },
         resizeWithNewMinWidth: function(newMinWidth) {
-            var calculated = newMinWidth;
+            var calculated = newMinWidth, delta = this.getWidth();
             if (this.getWidth() < newMinWidth) {
                 this.setWidth(calculated);
                 this._minSize.width = newMinWidth;
@@ -297,6 +302,8 @@
                     }
                 }
             }
+
+            this.fire('resize', {width: newMinWidth - delta, height: 0});
 
             return calculated;
         }

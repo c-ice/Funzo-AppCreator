@@ -6,6 +6,7 @@
         <link href="css/bootstrap.css" rel="stylesheet">
         <link href="css/main.css" rel="stylesheet">
         <script src="js/libs/jquery-1.9.0/jquery.min.js"></script>
+        <script src="js/libs/jquery-1.9.0/jquery.nano.js"></script>
         <script src="js/libs/bootstrap.js"></script>
     </head>
     <body class="container-fluid">
@@ -98,6 +99,7 @@
             <script src="js/AppCreator.js"></script>
             <script src="js/utils/GraphicTools.js"></script>
             <script src="js/utils/Images.js"></script>
+            <script src="js/utils/Dialogs.js"></script>
             <script src="js/shapes/Arrow.js"></script>
             <script src="js/Element.js"></script>
             <script src="js/Attribute.js"></script>
@@ -151,6 +153,18 @@
                     //                YourObject.y = Math.floor(YourObject.y/100)*100 +50;
                     //            }
                 });
+            </script>
+
+            <script id="SimpleDialogTpl" type="text/template">
+                <form class="simpleDialog" id='{0}'>
+                    <button class="btn btn-mini" type="button"><i class="icon-remove"></i></button>
+                    <span>
+                        <input name="name" type="text" placeholder="Name" />
+                        <input name="type" type="text" placeholder="Type" />
+                    </span>
+                    <button class="btn btn-mini btn-primary" type="submit"><i class="icon-ok"></i></button>
+
+                </form>
             </script>
         </div>
     </body>

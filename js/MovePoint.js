@@ -11,8 +11,9 @@
     AppCreator.MovePoint.prototype = {
         _initMovePoint: function(config) {
             var self = this;
+            // TODO: change radius to 4px. and add drawHitFunc with r=12px;
             self.setDefaultAttrs({
-                radius: 15,
+                radius: 12,
                 fill: 'black',
                 opacity: 0.5,
                 isStatic: false
