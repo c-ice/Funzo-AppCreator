@@ -13,36 +13,30 @@
     AppCreator.Dialogs.SimpleDialog.prototype = {
         initDialog: function(config) {
             config = config || {};
-            this._position = {
+            this.attrs = {
                 x: (config.x ? config.x : 0),
-                y: (config.y ? config.y : 0)
+                y: (config.y ? config.y : 0),   
+                id: "simpleDialog_" + AppCreator.Dialogs._count++,
+                DOM: ''
             };
-            this._id = "simpleDialog_" + AppCreator.Dialogs._count++;
-            this._DOM = $.nano($('#SimpleDialogTpl').html(), {'0': this._id});
             
-            $('body').append(this._DOM);
+            this.setDOM($.nano($('#SimpleDialogTpl').html(), {'0': this.getId()}));
+            
+            $('body').append(this.getDOM());
             
         },
         setPosition: function(pos) {
-            this._position = pos;
-            this._draw();
+            if (Kinetic.Type._isArray(pos)) {
+                this.setX(pos[0]);
+                this.setY(pos[1]);
+            } else {
+                this.setX(pos.x);
+                this.setY(pos.y);
+                
+            }
         },
         getPosition: function() {
-            return this._position;
-        },
-        getX: function() {
-            return this._position.x;
-        },
-        setX: function(x) {
-            this._position.x = x;
-            this._draw();
-        },
-        getY: function() {
-            return this._position.y;
-        },
-        setY: function(y) {
-            this._position.y = y;
-            this._draw();
+            return {x: this.getX(), y:this.getY()};
         },
         show: function() {
             $('#' + this._id).show();
@@ -60,10 +54,19 @@
 
         },
         _draw: function() {
-            $('#' + this._id).css('top', this._position.y);
-            $('#' + this._id).css('left', this._position.x);
+            $('#' + this.getId()).css({
+                'top': this.getY(), 
+                'left': this.getX(),
+                'width': this.getWidth()
+            });
+            
         }
     };
+
+    /** 
+     * add methods
+     */
+    AppCreator.Globals.addGettersSetters(AppCreator.Dialogs.SimpleDialog, ['x', 'y', 'id', 'DOM', 'width']);
 
     /**
      * Create Add attribute dialog to set

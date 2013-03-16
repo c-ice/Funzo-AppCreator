@@ -61,7 +61,7 @@
             </div>
             <script>
                 $('.btn-toolbar button').click(function(e) {
-                    instance.setSelectedTool($(this).data('tool'));
+                instance.setSelectedTool($(this).data('tool'));
                 });
             </script>
         </div>
@@ -97,6 +97,7 @@
             </div>
             <script src="KineticJS/dist/kinetic-vcurrent.js" ></script>        
             <script src="js/AppCreator.js"></script>
+            <script src="js/utils/Global.js"></script>
             <script src="js/utils/GraphicTools.js"></script>
             <script src="js/utils/Images.js"></script>
             <script src="js/utils/Dialogs.js"></script>
@@ -110,60 +111,59 @@
                 var instance = null;
                 var A, B;
                 $(document).ready(function() {
-                    instance = new AppCreator.Root();
+                instance = new AppCreator.Root();
 
-                    A = new AppCreator.Element({
-                        x: 100,
-                        y: 100,
-                        width: 50,
-                        height: 200,
-                        draggable: true
-                    });
-                    B = new AppCreator.Element({
-                        x: 350,
-                        y: 100,
-                        width: 50,
-                        height: 200,
-                        draggable: true
-                    });
+                A = new AppCreator.Element({
+                x: 100,
+                y: 100,
+                width: 50,
+                height: 200,
+                draggable: true
+                });
+                B = new AppCreator.Element({
+                x: 350,
+                y: 100,
+                width: 50,
+                height: 200,
+                draggable: true
+                });
 
-                    instance.getLayer().add(A);
+                instance.getLayer().add(A);
 
-                    A.addAttribute({name: "testovacia", type: 'String'});
-                    A.addAttribute({name: "testovacia1", type: 'String'});
-                    A.addAttribute({name: "testovacia2", type: 'String'});
+                A.addAttribute({name: "testovacia", type: 'String'});
+                A.addAttribute({name: "testovacia1", type: 'String'});
+                A.addAttribute({name: "testovacia2", type: 'String'});
 
-                    instance.getLayer().add(B);
+                instance.getLayer().add(B);
 
-                    B.addAttribute({name: "Collection", type: 'String'});
-                    B.addAttribute({name: "Transaction", type: 'String'});
+                B.addAttribute({name: "Collection", type: 'String'});
+                B.addAttribute({name: "Transaction", type: 'String'});
 
-                    var assoc = new AppCreator.Association({target: B,
-                        source: A});
+                var assoc = new AppCreator.Association({target: B,
+                source: A});
 
-                    instance.getLinesLayer().add(assoc);
-                    instance.getLinesLayer().draw();
-                    // GRID - snippet 
-                    // http://stackoverflow.com/questions/9494292/jquery-drag-and-drop-and-snap-to-grid-in-kineticjs
-                    //            box.on("dragend", function(){
-                    //                snaptogrid(box);
-                    //            });
-                    //            function snaptogrid(YourObject){
-                    //                YourObject.x = Math.floor(YourObject.x/100)*100 +50;
-                    //                YourObject.y = Math.floor(YourObject.y/100)*100 +50;
-                    //            }
+                instance.getLinesLayer().add(assoc);
+                instance.getLinesLayer().draw();
+                // GRID - snippet 
+                // http://stackoverflow.com/questions/9494292/jquery-drag-and-drop-and-snap-to-grid-in-kineticjs
+                //            box.on("dragend", function(){
+                //                snaptogrid(box);
+                //            });
+                //            function snaptogrid(YourObject){
+                //                YourObject.x = Math.floor(YourObject.x/100)*100 +50;
+                //                YourObject.y = Math.floor(YourObject.y/100)*100 +50;
+                //            }
                 });
             </script>
 
             <script id="SimpleDialogTpl" type="text/template">
                 <form class="simpleDialog" id='{0}'>
-                    <button class="btn btn-mini" type="button"><i class="icon-remove"></i></button>
-                    <span>
-                        <input name="name" type="text" placeholder="Name" />
-                        <input name="type" type="text" placeholder="Type" />
-                    </span>
-                    <button class="btn btn-mini btn-primary" type="submit"><i class="icon-ok"></i></button>
-
+                    <div style="float: left;width: 100%;">
+                        <input name="name" type="text" placeholder="Name" style="float:left" />
+                        <input name="type" type="text" placeholder="Type" style="float:left"/>
+                    </div>
+                    <button class="btn btn-mini leftcolumn" type="button"><i class="icon-remove"></i></button>
+                    <button class="btn btn-mini btn-primary rightcolumn" type="submit"><i class="icon-ok"></i></button>
                 </form>
             </script>
         </div>

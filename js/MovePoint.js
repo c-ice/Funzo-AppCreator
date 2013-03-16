@@ -13,7 +13,7 @@
             var self = this;
             // TODO: change radius to 4px. and add drawHitFunc with r=12px;
             self.setDefaultAttrs({
-                radius: 12,
+                radius: 6,
                 fill: 'black',
                 opacity: 0.5,
                 isStatic: false
@@ -115,9 +115,16 @@
 
                 targetOffset.x = (Math.min(Math.max(Math.floor(targetOffset.x / AppCreator.gridSize) * AppCreator.gridSize, 0), targetSize.width));
                 targetOffset.y = (Math.min(Math.max(Math.floor(targetOffset.y / AppCreator.gridSize) * AppCreator.gridSize, 0), targetSize.height));
-                
+
                 this.getOwner().setTargetOffset(targetOffset);
             }
+        },
+        drawHitFunc: function(canvas) {
+            var context = canvas.getContext();
+            context.beginPath();
+            context.arc(0, 0, 12, 0, Math.PI * 2, true);
+            context.closePath();
+            canvas.fillStroke(this);
         }
     };
 
