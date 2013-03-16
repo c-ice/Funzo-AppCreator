@@ -40,7 +40,7 @@ body {
     height: 22px;
 }
 
-.simpleDialog div {
+.simpleDialog .dialogBoxed {
     -webkit-box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
     -moz-box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
@@ -78,4 +78,9 @@ body {
     position: relative;
     right: -32px; /*Set left marginto -(RightColumnWidth)*/
     top: -22px;
+}
+
+.vsplitbar {
+    width: 6px;
+    background-color: #cccccc;
 }

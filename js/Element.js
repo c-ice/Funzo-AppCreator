@@ -93,10 +93,19 @@
             });
 
             btn.on('click', function() {
-                self.addAttribute({
-                    name: "Test",
-                    type: "Button"
+                // TODO: check for showed dialog
+                var dlg = new AppCreator.Dialogs.SimpleDialog({
+                    y: self.getAbsolutePosition().y +  self._newAttributeY(),
+                    x: self.getAbsolutePosition().x,
+                    width: self.getWidth()
                 });
+                dlg.submit = function(el) {
+                    self.addAttribute($(el).serializeObject());
+                    self.setDraggable(true);
+                    dlg.remove();
+                };
+                
+                self.setDraggable(false);
             });
 
             self.add(btn);
@@ -211,11 +220,14 @@
 
             this._isSelected = selected;
         },
+        _newAttributeY: function() {
+            return (this._attributes.length ? this._attributes.length + 1 : 1) * this.attributesDrawHeight;
+        },
         addAttribute: function(attribute) {
             if (typeof this._attributes[attribute.name] === 'undefined') {
                 var attr = new AppCreator.Attribute({
                     x: 0,
-                    y: (this._attributes.length ? this._attributes.length + 1 : 1) * this.attributesDrawHeight,
+                    y: this._newAttributeY(),
                     width: this.getWidth(),
                     name: attribute.name,
                     type: attribute.type

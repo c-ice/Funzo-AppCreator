@@ -49,14 +49,16 @@ var AppCreator = {};
 
             self._stage.add(self._linesLayer);
             self._stage.add(self._layer);
-
+          
             // prevent cursor changing on move
             self._stage.content.addEventListener("mousedown", function(e) {
                 e.preventDefault();
             }, false);
 
             self._stage.content.addEventListener("click", self._mouseToolClickEventListener, false);
-
+            $(self._stage.content).ready(function() {
+                self._offset = $(self._stage.content).offset();
+            });
             self._stage.content.onmousedown = function(e) {
                 switch (AppCreator.selectedTool) {
                     case AppCreator.tools.AddElement:
@@ -130,6 +132,9 @@ var AppCreator = {};
         },
         getLinesLayer: function() {
             return this._linesLayer;
+        },
+        getDOMOffset: function() {
+            return this._offset;
         },
         setSelectedTool: function(tool) {
             if (tool === AppCreator.selectedTool) {
