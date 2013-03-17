@@ -21,7 +21,8 @@
                 height: this.attributesDrawHeight
             };
             this._addAttrButton = null;
-
+            this._addAttrDialogs = [];
+            
             // call super constructor
             Kinetic.Group.call(this, config);
             this.ACType = 'Element';
@@ -66,6 +67,19 @@
                 this.setY(newY);
             });
         },
+        _repositionAddAttrDialogs: function() {
+            var self = this, i = 0, len = self._addAttrDialogs.length;
+            if (len > 0) {
+                for (; i < len; i++) {
+                    self._addAttrDialogs[i].setY(self.getAbsolutePosition().y + self._newAttributeY() + i * 22);
+                }
+
+                var maxPos = self._addAttrDialogs[len - 1].getY() + self._addAttrDialogs[len - 1].getHeight();
+                if (self.getHeight() + self.getY() < maxPos) {
+                    self.resizeToNewSize(self.getWidth(), maxPos - self.getY());
+                }
+            }
+        },
         getMinSize: function() {
             return this._minSize;
         },
@@ -93,18 +107,32 @@
             });
 
             btn.on('click', function() {
-                // TODO: check for showed dialog
+                // TODO: resize
                 var dlg = new AppCreator.Dialogs.SimpleDialog({
-                    y: self.getAbsolutePosition().y +  self._newAttributeY(),
+                    y: self.getAbsolutePosition().y + self._newAttributeY() + self._addAttrDialogs.length * 22,
                     x: self.getAbsolutePosition().x,
                     width: self.getWidth()
                 });
+
+                self._addAttrDialogs.push(dlg);
+                self._repositionAddAttrDialogs();
+
                 dlg.submit = function(el) {
                     self.addAttribute($(el).serializeObject());
                     self.setDraggable(true);
+                    for (var i in self._addAttrDialogs) {
+                        if (self._addAttrDialogs[i] === dlg) {
+                            self._addAttrDialogs.splice(i, 1);
+                            if(self._addAttrDialogs.length > 0) {
+                                self._addAttrDialogs[(self._addAttrDialogs.length > i)?i:self._addAttrDialogs.length - 1].focus();
+                            }
+                            break;
+                        }
+                    }
+                    self._repositionAddAttrDialogs();
                     dlg.remove();
                 };
-                
+
                 self.setDraggable(false);
             });
 
@@ -116,8 +144,6 @@
                     y: deltaSize.height
                 });
             });
-
-            self._addAttrButton = btn;
 
             if (!image.complete) {
                 image.addEventListener('load', function() {

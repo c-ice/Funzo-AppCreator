@@ -19,7 +19,8 @@
                 y: (config.y ? config.y : 0),
                 id: "simpleDialog_" + AppCreator.Dialogs._count++,
                 DOM: '',
-                width: config.width ? config.width : 100
+                width: config.width ? config.width : 100,
+                height: 22
             };
 
             self.setDOM($.nano($('#SimpleDialogTpl').html(), {'0': this.getId()}));
@@ -62,8 +63,15 @@
         cancel: function() {
             console.log(this.getId() + " Canceled");
         },
+        focus: function() {
+            $('#' + this.getId() + " input")[0].focus();
+        },
         validate: function(el) {
-            // todo: validate Form
+            var o = $(el).serializeObject();
+            if (!o.name || !o.type || o.type.length === 0 || o.name.length === 0) {
+                return false;
+            }
+
             return true;
         },
         _draw: function() {
@@ -80,7 +88,7 @@
      * add methods
      */
     AppCreator.Globals.addGettersSetters(AppCreator.Dialogs.SimpleDialog, ['x', 'y', 'id', 'DOM', 'width']);
-
+    AppCreator.Globals.addGetters(AppCreator.Dialogs.SimpleDialog, ['height']);
     /**
      * Create Add attribute dialog to set
      * @param {Callback} succes
