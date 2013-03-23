@@ -33,7 +33,7 @@
                         'y': pos.y
                     });
 
-            if (points.length < 2 || this._target === 'undefined') {
+            if (points.length < 2 || this._target === null) {
                 points.push(point);
             } else {
                 // calculate point index
@@ -52,44 +52,13 @@
                 } else {
                     points.splice(points.length - 1, 0, point);
                 }
-//                for (var i = 0; i < points.length; i++) {
-//                    innerPoints.push({'index': i, "len": AppCreator.GraphicTools.pointToPointDistance(
-//                                points[i].getPosition(),
-//                                originPoint
-//                                )});
-//                }
-//                if (innerPoints.length > 0) {
-//                    innerPoints.sort(function(a, b) {
-//                        return a.len - b.len;
-//                    });
-//
-//                    var len1 = (innerPoints[0].index - 1 < 0)? 
-//
-//                    if (AppCreator.GraphicTools.pointToLineDistance(
-//                            points[innerPoints[0].index].getPosition(),
-//                            points[innerPoints[0].index + 1].getPosition(),
-//                            originPoint)
-//                            >
-//                            AppCreator.GraphicTools.pointToLineDistance(
-//                            points[innerPoints[0].index].getPosition(),
-//                            points[innerPoints[0].index - 1].getPosition(),
-//                            originPoint)) {
-//                                
-//                                
-//                    } else {
-//
-//                    }
-//                    points.splice(innerPoints[0].index, 0, point);
-//                } else {
-//                    points.splice(points.length - 1, 0, point);
-//                }
             }
             this.setPoints(points);
 
             if (this.getParent()) {
                 this.getParent().add(point);
             } else {
-                instance._linesLayer.add(point);
+                AppCreator.instance.add2LinesLayer(point);
             }
 
             return point;
@@ -160,35 +129,36 @@
             if (self._target) {
                 self._target.off('dragmove');
                 self._target.off('resize');
+                self._target = null;
             }
-            self._target = target;
-
-            if (self.getSource() && self._target.getX() < self.getSource().getX()) {
-                x = self._target.getWidth() + self._target.getX();
+            
+            if (self.getSource() && target.getX() < self.getSource().getX()) {
+                x = target.getWidth() + target.getX();
                 this.setTargetOffset({
-                    'x': self._target.getWidth(),
-                    'y': self._target.getHeight() / 2
+                    'x': target.getWidth(),
+                    'y': target.getHeight() / 2
                 });
             } else {
-                x = self._target.getX();
+                x = target.getX();
                 this.setTargetOffset({
                     'x': 0,
-                    'y': self._target.getHeight() / 2
+                    'y': target.getHeight() / 2
                 });
             }
 
-            y = self._target.getHeight() / 2 + self._target.getY();
+            y = target.getHeight() / 2 + target.getY();
 
             point = self.addMovePoint([x, y]);
             point.setIsStatic(true);
-            point.setTarget(self._target);
+            point.setTarget(target);
 
-            self._target.on('dragmove resize', function() {
+            target.on('dragmove resize', function() {
                 point.setX(this.getX() + self.getTargetOffset().x);
                 point.setY(this.getY() + self.getTargetOffset().y);
                 self.getParent().draw();
             });
 
+            self._target = target;
         },
         getTarget: function() {
             return this._target;

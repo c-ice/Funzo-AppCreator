@@ -49,7 +49,7 @@ var AppCreator = {};
 
             self._stage.add(self._linesLayer);
             self._stage.add(self._layer);
-          
+
             // prevent cursor changing on move
             self._stage.content.addEventListener("mousedown", function(e) {
                 e.preventDefault();
@@ -132,6 +132,9 @@ var AppCreator = {};
         },
         getLinesLayer: function() {
             return this._linesLayer;
+        },
+        add2LinesLayer: function(obj) {
+            this._linesLayer.add(obj);
         },
         getDOMOffset: function() {
             return this._offset;
