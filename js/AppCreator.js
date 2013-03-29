@@ -45,7 +45,7 @@ var AppCreator = {};
             self.currentAssoc = null;
             self._gridSize = 5;
             self._layer = new Kinetic.Layer();
-            self._linesLayer = self._layer;//new Kinetic.Layer();
+            self._linesLayer = new Kinetic.Layer();
 
             self._stage.add(self._linesLayer);
             self._stage.add(self._layer);
@@ -105,6 +105,8 @@ var AppCreator = {};
                                             this.removeEventListener('mousemove', self._assocMouseMoveEventListener, false);
                                             self.currentAssoc.getPoints().pop().destroy();
                                             self.currentAssoc.setTarget(intersects[i].getParent());
+//                                            self.currentAssoc.getTarget().moveToTop();
+//                                            self.currentAssoc.getSource().moveToTop();
                                             self.currentAssoc = null;
                                         }
                                     }
