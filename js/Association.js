@@ -23,6 +23,7 @@
             });
         },
         addMovePoint: function() {
+            //TODO: zatial sa tahaju nepriamociaro mozno to prerobit ?
             var points = this.getPoints(),
                     pos = Kinetic.Type._getXY([].slice.call(arguments)),
                     innerPoints = [],
@@ -37,7 +38,6 @@
                 points.push(point);
             } else {
                 // calculate point index
-                // TODO: pracuj nefunguje spravne prerob ked budes ciary tahat priamociaro
                 for (var i = 1; i < points.length; i++) {
                     innerPoints.push({'index': i, "len": AppCreator.GraphicTools.pointToLineDistance(
                                 {"x": points[i - 1].getX(), "y": points[i - 1].getY()},
@@ -131,7 +131,7 @@
                 self._target.off('resize');
                 self._target = null;
             }
-            
+
             if (self.getSource() && target.getX() < self.getSource().getX()) {
                 x = target.getWidth() + target.getX();
                 this.setTargetOffset({
