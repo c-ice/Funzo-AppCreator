@@ -45,7 +45,7 @@ var AppCreator = {};
             self.currentAssoc = null;
             self._gridSize = 5;
             self._layer = new Kinetic.Layer();
-            self._linesLayer = new Kinetic.Layer();
+            self._linesLayer = self._layer;//new Kinetic.Layer();
 
             self._stage.add(self._linesLayer);
             self._stage.add(self._layer);

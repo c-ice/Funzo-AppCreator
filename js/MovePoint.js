@@ -11,15 +11,14 @@
     AppCreator.MovePoint.prototype = {
         _initMovePoint: function(config) {
             var self = this;
-            // TODO: change radius to 4px. and add drawHitFunc with r=12px;
-            self.setDefaultAttrs({
-                radius: 6,
-                fill: 'black',
-                opacity: 0.5,
-                isStatic: false
-            });
+            
+            self.createAttrs();
             // call super constructor
             Kinetic.Circle.call(self, config);
+            self.attrs.radius = 6;
+            self.attrs.fill = 'black';
+            self.attrs.opacity = 0.5;
+
             self.ACType = 'MovePoint';
             self.setDraggable(true);
             self._offset = 15;
@@ -130,6 +129,7 @@
 
     Kinetic.Global.extend(AppCreator.MovePoint, Kinetic.Circle);
 
-    Kinetic.Node.addGetters(AppCreator.MovePoint, ['target']);
-    Kinetic.Node.addGettersSetters(AppCreator.MovePoint, ['isStatic', 'owner']);
+    Kinetic.Node.addGetter(AppCreator.MovePoint, 'target');
+    Kinetic.Node.addGetterSetter(AppCreator.MovePoint, 'isStatic', false);
+    Kinetic.Node.addGetterSetter(AppCreator.MovePoint, 'owner');
 })();

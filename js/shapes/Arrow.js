@@ -10,12 +10,14 @@
 
     AppCreator.Arrow.prototype = {
         _initArrow: function(config) {
-            this.setDefaultAttrs({
-                fill: 'black'
-            });
+            this.createAttrs();
+            
             // call super constructor
             Kinetic.Polygon.call(this, config);
-            self.ACType = 'Arrow';
+            
+            this.attrs.fill = 'black';
+            
+            this.ACType = 'Arrow';
             this._setDrawFuncs();
             this.superDrawFunc = this.getDrawFunc();
 
@@ -40,5 +42,6 @@
 
     Kinetic.Global.extend(AppCreator.Arrow, Kinetic.Polygon);
 
-    Kinetic.Node.addGettersSetters(AppCreator.Arrow, ['center', 'arrowTip']);
+    Kinetic.Node.addGetterSetter(AppCreator.Arrow, 'center');
+    Kinetic.Node.addGetterSetter(AppCreator.Arrow, 'arrowTip');
 })();
