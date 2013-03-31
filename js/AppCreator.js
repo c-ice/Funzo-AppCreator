@@ -105,8 +105,7 @@ var AppCreator = {};
                                             this.removeEventListener('mousemove', self._assocMouseMoveEventListener, false);
                                             self.currentAssoc.getPoints().pop().destroy();
                                             self.currentAssoc.setTarget(intersects[i].getParent());
-//                                            self.currentAssoc.getTarget().moveToTop();
-//                                            self.currentAssoc.getSource().moveToTop();
+                                            intersects[i].getParent().fire('dragmove');
                                             self.currentAssoc = null;
                                         }
                                     }

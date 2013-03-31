@@ -100,7 +100,7 @@
                 val.on('resize', function() {
                     var pos = self.attrs['dragBoundFunc'](self.getPosition());
                     self.setPosition(pos);
-                    self.simulate('dragmove');
+                    self.fire('dragmove');
                 });
 
                 self.setAttr('target', val);

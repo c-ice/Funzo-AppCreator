@@ -22,7 +22,7 @@
             };
             this._addAttrButton = null;
             this._addAttrDialogs = [];
-            
+
             // call super constructor
             Kinetic.Group.call(this, config);
             this.ACType = 'Element';
@@ -35,11 +35,12 @@
                 fill: 'white',
                 stroke: 'black',
                 strokeWidth: 1,
-                shadowColor: 'black',
-                shadowBlur: 15,
-                shadowOffset: 0,
-                shadowOpacity: 0.6,
-                shadowEnabled: false
+                shadow: {
+                    color: 'black',
+                    blur: 15,
+                    offset: [0,0],
+                    opacity: 0.6
+                }
             });
             this.add(this._border);
 
@@ -123,8 +124,8 @@
                     for (var i in self._addAttrDialogs) {
                         if (self._addAttrDialogs[i] === dlg) {
                             self._addAttrDialogs.splice(i, 1);
-                            if(self._addAttrDialogs.length > 0) {
-                                self._addAttrDialogs[(self._addAttrDialogs.length > i)?i:self._addAttrDialogs.length - 1].focus();
+                            if (self._addAttrDialogs.length > 0) {
+                                self._addAttrDialogs[(self._addAttrDialogs.length > i) ? i : self._addAttrDialogs.length - 1].focus();
                             }
                             break;
                         }
@@ -157,11 +158,11 @@
         _renderTitle: function(exists) {
             if (exists) {
                 var titles = this.get('#title');
-
                 if (titles.length > 0) {
                     titles[0].setText(this.title());
                 }
             } else {
+                var self = this;
                 this._title = new AppCreator.Attribute({
                     x: 0,
                     y: 0,
@@ -169,7 +170,6 @@
                     name: "",
                     type: ""
                 });
-
                 this._title.setKineticText(new Kinetic.Text({
                     id: 'title',
                     x: this.attributesPadding,
@@ -181,18 +181,33 @@
                     align: 'center',
                     width: this.getMinSize().width
                 }));
-
                 this.resizeWithNewMinWidth(this._title.getWidth());
+                this._title.on('dblclick', function() {
+                    var dlg = new AppCreator.Dialogs.TitleDialog({
+                        y: self.getAbsolutePosition().y,
+                        x: self.getAbsolutePosition().x,
+                        width: self.getWidth(),
+                        title: self.title()
+                    });
+
+                    self.setDraggable(false);
+                    dlg.submit = function(el) {
+                        self.title($(el).serializeObject().name);
+                        self.setDraggable(true);
+                        dlg.remove();
+                        self.getLayer().draw();
+                    };
+                });
 
                 this.add(this._title);
             }
         },
         title: function(title) {
             if (typeof title === 'string') {
-                this._title.setText(title);
+                this._title.getKineticText().setText(title);
             }
 
-            return this._title.getText();
+            return this._title.getKineticText().getText();
         },
         _createResizePoints: function() {
             if (!this._resizePoints ||
@@ -282,7 +297,7 @@
                 }
             }
 
-            this.draw();
+            this.getLayer().draw();
         },
         resizeToNewSize: function(newWidth, newHeight) {
             var delta = {width: 0, height: 0};

@@ -3,37 +3,37 @@
 
     AppCreator.Dialogs._count = 0;
 
-    AppCreator.Dialogs.SimpleDialog = function(config) {
+    AppCreator.Dialogs.BaseDialog = function(config) {
         this.initDialog(config);
     };
 
     /**
      * attrs: x,y,width
      */
-    AppCreator.Dialogs.SimpleDialog.prototype = {
+    AppCreator.Dialogs.BaseDialog.prototype = {
         initDialog: function(config) {
             var self = this;
             config = config || {};
             self.attrs = {
                 x: (config.x ? config.x : 0),
                 y: (config.y ? config.y : 0),
-                id: "simpleDialog_" + AppCreator.Dialogs._count++,
+                id: "dialog_" + AppCreator.Dialogs._count++,
                 DOM: '',
                 width: config.width ? config.width : 100,
-                height: 22
+                height: 22,
+                rendered: false,
+                templateId: '',
+                templateParams:  {}
             };
 
-            self.setDOM($.nano($('#SimpleDialogTpl').html(), {'0': this.getId()}));
-
-            $('body').append(self.getDOM());
-            $("#" + self.getId()).bind('submit', function(e) {
-                e.preventDefault();
-                if (self.validate(this)) {
-                    self.submit(this);
-                }
-            });
-            self._draw();
+            self.attrs.templateParams["0"] = self.getId();
+            //self.render();
+            //self._draw();
         },
+        /**
+         * set XY with array = [x, y] or with object {x:y:}
+         * @param {Array|Object} pos
+         */
         setPosition: function(pos) {
             if (Kinetic.Type._isArray(pos)) {
                 this.setX(pos[0]);
@@ -55,6 +55,7 @@
         },
         remove: function() {
             $('#' + this.getId()).remove();
+            this.setRendered(false);
         },
         submit: function(el) {
 
@@ -67,12 +68,29 @@
             $('#' + this.getId() + " input")[0].focus();
         },
         validate: function(el) {
-            var o = $(el).serializeObject();
-            if (!o.name || !o.type || o.type.length === 0 || o.name.length === 0) {
-                return false;
-            }
-
             return true;
+        },
+        /**
+         * Render DOM
+         */
+        render: function() {
+            if (!this.getRendered()) {
+                var self = this;
+
+                self.setRendered(true);
+                self.setDOM($.nano($('#' + this.getTemplateId()).html(), self.getTemplateParams()));
+
+                $('body').append(self.getDOM());
+
+                $("#" + self.getId()).bind('submit', function(e) {
+                    e.preventDefault();
+                    if (self.validate(this)) {
+                        self.submit(this);
+                    }
+                });
+
+                this.focus();
+            }
         },
         _draw: function() {
             $('#' + this.getId()).css({
@@ -87,8 +105,9 @@
     /** 
      * add methods
      */
-    AppCreator.Globals.addGettersSetters(AppCreator.Dialogs.SimpleDialog, ['x', 'y', 'id', 'DOM', 'width']);
-    AppCreator.Globals.addGetters(AppCreator.Dialogs.SimpleDialog, ['height']);
+    AppCreator.Globals.addGettersSetters(AppCreator.Dialogs.BaseDialog, ['x', 'y',
+        'id', 'DOM', 'width', 'rendered', 'templateId', 'templateParams']);
+    AppCreator.Globals.addGetters(AppCreator.Dialogs.BaseDialog, ['height']);
     /**
      * Create Add attribute dialog to set
      * @param {Callback} succes
@@ -96,7 +115,7 @@
      * @returns {undefined}
      */
     AppCreator.Dialogs.addAttributeDialog = function(succes, cancel) {
-        var dlg = new AppCreator.Dialogs.SimpleDialog();
+        var dlg = new AppCreator.Dialogs.BaseDialog();
         dlg.submit = succes;
         dlg.cancel = cancel;
 
