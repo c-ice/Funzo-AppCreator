@@ -8,17 +8,17 @@
         _initAssociation: function(config) {
             var self = this;
             this.createAttrs();
-            
-            self._target = null;
-            self._source = null;
-            
-            Kinetic.Line.call(self, config);
-            
-            self.attrs.stroke = 'black';
-            self.attrs.strokeWidth = 1;
-            
+            this.attrs.points = [];
+            this._target = null;
+            this._source = null;
+
+            Kinetic.Line.call(this, config);
+
+            this.attrs.stroke = 'black';
+            this.attrs.strokeWidth = 1;
+
             this.ACType = 'Association';
-            self.on('mousedown', function(e) {
+            this.on('mousedown', function(e) {
                 var point = self.addMovePoint([e.layerX, e.layerY]);
                 point.getParent().draw();
                 point.fire('mousedown');
@@ -62,7 +62,7 @@
             } else {
                 AppCreator.instance.add2LinesLayer(point);
             }
-            
+
             return point;
         },
         /**
@@ -101,10 +101,14 @@
             if (points.length > 2) {
                 for (i; i < points.length - 1; i++) {
                     // ak su vsetky v jednej rovine zmazat stredny
-                    if (points[i - 1].getY() - tolerance < points[i].getY() &&
+                    if ((points[i - 1].getY() - tolerance < points[i].getY() &&
                             points[i - 1].getY() + tolerance > points[i].getY() &&
                             points[i + 1].getY() - tolerance < points[i].getY() &&
-                            points[i + 1].getY() + tolerance > points[i].getY()) {
+                            points[i + 1].getY() + tolerance > points[i].getY()) ||
+                            (points[i - 1].getX() - tolerance < points[i].getX() &&
+                                    points[i - 1].getX() + tolerance > points[i].getX() &&
+                                    points[i + 1].getX() - tolerance < points[i].getX() &&
+                                    points[i + 1].getX() + tolerance > points[i].getX())) {
                         // vyhodit zmazazt
                         points.splice(i, 1)[0].destroy();
                         i--;
@@ -232,6 +236,6 @@
 
     Kinetic.Global.extend(AppCreator.Association, Kinetic.Line);
 
-    Kinetic.Node.addGetterSetter(AppCreator.Association, 'targetOffset', {x:0,y:0});
-    Kinetic.Node.addGetterSetter(AppCreator.Association, 'sourceOffset', {x:0,y:0});
+    Kinetic.Node.addGetterSetter(AppCreator.Association, 'targetOffset', {x: 0, y: 0});
+    Kinetic.Node.addGetterSetter(AppCreator.Association, 'sourceOffset', {x: 0, y: 0});
 })();

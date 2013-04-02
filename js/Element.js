@@ -22,6 +22,7 @@
             };
             this._addAttrButton = null;
             this._addAttrDialogs = [];
+            this._titleDialog = null;
 
             // call super constructor
             Kinetic.Group.call(this, config);
@@ -38,7 +39,7 @@
                 shadow: {
                     color: 'black',
                     blur: 15,
-                    offset: [0,0],
+                    offset: [0, 0],
                     opacity: 0.6
                 }
             });
@@ -120,7 +121,6 @@
 
                 dlg.submit = function(el) {
                     self.addAttribute($(el).serializeObject());
-                    self.setDraggable(true);
                     for (var i in self._addAttrDialogs) {
                         if (self._addAttrDialogs[i] === dlg) {
                             self._addAttrDialogs.splice(i, 1);
@@ -132,6 +132,8 @@
                     }
                     self._repositionAddAttrDialogs();
                     dlg.remove();
+
+                    self.setDraggable(true);
                 };
 
                 self.setDraggable(false);
@@ -183,7 +185,7 @@
                 }));
                 this.resizeWithNewMinWidth(this._title.getWidth());
                 this._title.on('dblclick', function() {
-                    var dlg = new AppCreator.Dialogs.TitleDialog({
+                    self._titleDialog = new AppCreator.Dialogs.TitleDialog({
                         y: self.getAbsolutePosition().y,
                         x: self.getAbsolutePosition().x,
                         width: self.getWidth(),
@@ -191,10 +193,11 @@
                     });
 
                     self.setDraggable(false);
-                    dlg.submit = function(el) {
+                    self._titleDialog.submit = function(el) {
                         self.title($(el).serializeObject().name);
+                        self._titleDialog.remove();
+                        self._titleDialog = null;
                         self.setDraggable(true);
-                        dlg.remove();
                         self.getLayer().draw();
                     };
                 });
@@ -204,7 +207,20 @@
         },
         title: function(title) {
             if (typeof title === 'string') {
+                var old = this._title.getKineticText().getText(),
+                        index = AppCreator.models.indexOf(old);
+                if (index === -1) {
+                    AppCreator.models.push(title);
+                } else {
+                    AppCreator.models[index] = title;
+                }
+
                 this._title.getKineticText().setText(title);
+
+                this.fire('titlechanged', {
+                    oldValue: old,
+                    newValue: title
+                });
             }
 
             return this._title.getKineticText().getText();
@@ -359,6 +375,23 @@
             this.fire('resize', {width: newMinWidth - delta, height: 0});
 
             return calculated;
+        },
+        setDraggable: function(draggable) {
+            if (draggable && this.canBeDragged() || !draggable) {
+                //Node.setDraggable
+                this.setAttr('draggable', draggable);
+                this._dragChange();
+            }
+            //channailing
+            return this;
+        },
+        canBeDragged: function() {
+            if (this._addAttrDialogs.length > 0 ||
+                this._titleDialog !== null) {
+                return false;
+            }
+
+            return true;
         }
     }
 

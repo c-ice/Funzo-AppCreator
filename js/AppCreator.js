@@ -25,6 +25,8 @@ var AppCreator = {};
     AppCreator.gridSize = 1;
     AppCreator.selectedTool = AppCreator.tools.Mouse;
 
+    AppCreator.models = [];
+
     AppCreator.clickedElement = null;
     AppCreator.instance = null;
     // class instance
@@ -92,9 +94,8 @@ var AppCreator = {};
                             for (i in intersects) {
                                 if (intersects[i].getParent().ACType === 'Element') {
                                     if (!self.currentAssoc) {
-                                        self.currentAssoc = new AppCreator.Association({
-                                            'source': intersects[i].getParent()
-                                        });
+                                        self.currentAssoc = new AppCreator.Association();
+                                        self.currentAssoc.setSource(intersects[i].getParent());
 
                                         self._linesLayer.add(self.currentAssoc);
 
