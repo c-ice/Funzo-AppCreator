@@ -7,6 +7,7 @@
 
     AppCreator.Element.prototype = {
         _initElement: function(config) {
+            var self = this;
             this.attributesDrawHeight = 19;
             this._title = null;
             this._attributes = {
@@ -36,18 +37,21 @@
                 fill: 'white',
                 stroke: 'black',
                 strokeWidth: 1,
-                shadow: {
-                    color: 'black',
-                    blur: 15,
-                    offset: [0, 0],
-                    opacity: 0.6
-                }
+                shadowColor: 'black',
+                shadowBlur: 15,
+                shadowoffset: [0, 0],
+                shadowOpacity: 0.6
             });
+            this._border.setShadowEnabled(false);
+
             this.add(this._border);
 
             this._renderTitle(false);
-            this.on('click', function() {
-                this.setSelected(true);
+            self.on('click', function(evt) {
+                //evt.preventDefault();
+                setTimeout(function() {
+                    self.setSelected(true);
+                }, 100);
             });
 
             this.on('dragstart', function(e) {
@@ -135,6 +139,20 @@
 
                     self.setDraggable(true);
                 };
+                dlg.cancel = function() {
+                    for (var i in self._addAttrDialogs) {
+                        if (self._addAttrDialogs[i] === dlg) {
+                            self._addAttrDialogs.splice(i, 1);
+                            if (self._addAttrDialogs.length > 0) {
+                                self._addAttrDialogs[(self._addAttrDialogs.length > i) ? i : self._addAttrDialogs.length - 1].focus();
+                            }
+                            break;
+                        }
+                    }
+                    self._repositionAddAttrDialogs();
+                    dlg.remove();
+                    self.setDraggable(true);
+                };
 
                 self.setDraggable(false);
             });
@@ -194,11 +212,24 @@
 
                     self.setDraggable(false);
                     self._titleDialog.submit = function(el) {
+                        // ak sa nachadza tak neprida
+                        if (AppCreator.models.indexOf($(el).serializeObject().name) !== -1 &&
+                            $(el).serializeObject().name !== self.title()) {
+                            $(el).popover('show');
+                            return false;
+                        }
+                        $(el).popover('destroy');
                         self.title($(el).serializeObject().name);
                         self._titleDialog.remove();
                         self._titleDialog = null;
                         self.setDraggable(true);
                         self.getLayer().draw();
+                    };
+                    
+                    self._titleDialog.cancel = function() {
+                        self._titleDialog.remove();
+                        self._titleDialog = null;
+                        self.setDraggable(true);
                     };
                 });
 
@@ -209,6 +240,7 @@
             if (typeof title === 'string') {
                 var old = this._title.getKineticText().getText(),
                         index = AppCreator.models.indexOf(old);
+
                 if (index === -1) {
                     AppCreator.models.push(title);
                 } else {
@@ -264,7 +296,7 @@
                 }
 
                 this._border.setShadowEnabled(true);
-                this.getParent().draw();
+                this.fire('dragmove');
             }
 
             if (!selected && this._isSelected) {
@@ -272,9 +304,10 @@
                     this._resizePoints[i].hide();
                 }
                 this._border.setShadowEnabled(false);
-                this.getParent().draw();
+                this.fire('dragmove');
             }
-
+            
+            this.getLayer().draw();
             this._isSelected = selected;
         },
         _newAttributeY: function() {
@@ -387,13 +420,13 @@
         },
         canBeDragged: function() {
             if (this._addAttrDialogs.length > 0 ||
-                this._titleDialog !== null) {
+                    this._titleDialog !== null) {
                 return false;
             }
 
             return true;
         }
-    }
+    };
 
     Kinetic.Global.extend(AppCreator.Element, Kinetic.Group);
 })();

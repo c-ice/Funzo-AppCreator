@@ -170,18 +170,18 @@ var AppCreator = {};
             AppCreator.instance.currentAssoc.getParent().draw();
         },
         _mouseToolClickEventListener: function(evt) {
-            if (AppCreator.selectedTool === AppCreator.tools.Mouse &&
-                !evt.targetNode) {
-                console.log("clicked "+evt.targetNode);
-//                var pos = {x: y:},
-//                        childs = AppCreator.instance._layer.getChildren();
-//                if (!AppCreator.instance._stage.getIntersection(pos)) {
-//                    for (var i in childs) {
-//                        if (childs[i].ACType === 'Element') {
-//                            //childs[i].setSelected(false);
-//                        }
-//                    }
-//                }
+            if (Kinetic.DD.isDragging) {
+                Kinetic.DD.isDragging = false;
+                return;
+            }
+            if (AppCreator.selectedTool === AppCreator.tools.Mouse) {
+
+                var childs = AppCreator.instance._layer.getChildren();
+                for (var i in childs) {
+                    if (childs[i].ACType === 'Element') {
+                        childs[i].setSelected(false);
+                    }
+                }
             }
         }
     };

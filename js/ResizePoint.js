@@ -24,6 +24,8 @@
             self.createAttrs();
             self._type = {};
             self._target = config.target;
+            self.attrs.fill = 'black';
+            self.attrs.opacity = 0.5;
 
             // call super constructor
             Kinetic.Circle.call(self, config);
@@ -32,7 +34,7 @@
             self.attrs.x = -5;
             self.attrs.y = -5;
             self.attrs.draggable = true;
-            
+
             self.ACType = 'ResizePoint';
 
             self.on('mouseover', function() {
@@ -134,19 +136,19 @@
             var deltaX = 0, deltaY = 0;
             switch (type.id) {
                 case AppCreator.ResizePoint.Type.NorthWest.id:
-                    deltaY = 0;//-this.getHeight();
-                    deltaX = 0;//-this.getWidth();
+                    deltaY = -5;//-this.getHeight();
+                    deltaX = -5;//-this.getWidth();
                     break;
                 case AppCreator.ResizePoint.Type.SouthWest.id:
                     deltaY = this._target.getHeight();
-                    deltaX = 0;//-this.getWidth();
+                    deltaX = -5;//-this.getWidth();
                     break;
                 case AppCreator.ResizePoint.Type.SouthEast.id:
                     deltaY = this._target.getHeight();
                     deltaX = this._target.getWidth();
                     break;
                 case AppCreator.ResizePoint.Type.NorthEast.id:
-                    deltaY = 0;//-this.getHeight();
+                    deltaY = -5;//-this.getHeight();
                     deltaX = this._target.getWidth();
                     break;
             }
@@ -155,6 +157,25 @@
             this.setY(this._target.getY() + deltaY);
 
             this._type = type;
+        },
+        drawFunc: function(canvas) {
+            var context = canvas.getContext(),
+                    width = 5,
+                    height = 5;
+
+            context.beginPath();
+
+            context.rect(0, 0, width, height);
+
+            context.closePath();
+            canvas.fillStroke(this);
+        },
+        drawHitFunc: function(canvas) {
+            var context = canvas.getContext();
+            context.beginPath();
+            context.arc(0, 0, this.getRadius(), 0, Math.PI * 2, true);
+            context.closePath();
+            canvas.fillStroke(this);
         }
     };
 

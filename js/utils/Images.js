@@ -1,6 +1,6 @@
 (function() {
     AppCreator.Images = {};
-
+    
     AppCreator.Images.getImage = function(key) {
         // image lazy load ?
         var image = AppCreator.Images.all[key];

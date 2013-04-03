@@ -54,7 +54,7 @@
             $('#' + this.getId()).hide();
         },
         remove: function() {
-            $('#' + this.getId()).remove();
+            $('#' + this.getId()).remove().popover('destroy');
             this.setRendered(false);
         },
         submit: function(el) {
@@ -62,6 +62,7 @@
             console.log($(el).serializeObject());
         },
         cancel: function() {
+            this.remove();
             console.log(this.getId() + " Canceled");
         },
         focus: function() {
@@ -87,6 +88,9 @@
                     if (self.validate(this)) {
                         self.submit(this);
                     }
+                }).bind('reset', function(e) {
+                    e.preventDefault();
+                    self.cancel();
                 });
 
                 this.focus();
