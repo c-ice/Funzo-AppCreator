@@ -89,7 +89,7 @@
             {
                 title: 'Remove',
                 action: function(e) {
-                    console.log("removed ...");
+                    console.log("removed...");
                 }
             }, {
                 title: 'Add',
