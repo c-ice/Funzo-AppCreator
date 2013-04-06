@@ -109,9 +109,9 @@
     /** 
      * add methods
      */
-    AppCreator.Globals.addGettersSetters(AppCreator.Dialogs.BaseDialog, ['x', 'y',
+    AppCreator.GO.addGettersSetters(AppCreator.Dialogs.BaseDialog, ['x', 'y',
         'id', 'DOM', 'width', 'rendered', 'templateId', 'templateParams']);
-    AppCreator.Globals.addGetters(AppCreator.Dialogs.BaseDialog, ['height']);
+    AppCreator.GO.addGetters(AppCreator.Dialogs.BaseDialog, ['height']);
     /**
      * Create Add attribute dialog to set
      * @param {Callback} succes
