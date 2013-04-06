@@ -56,6 +56,7 @@
 
             this.on('dragstart', function(e) {
                 e.preventDefault();
+                AppCreator.GO.resetSelection(this);
                 AppCreator.setCursorTo('move');
             });
 
@@ -214,7 +215,7 @@
                     self._titleDialog.submit = function(el) {
                         // ak sa nachadza tak neprida
                         if (AppCreator.models.indexOf($(el).serializeObject().name) !== -1 &&
-                            $(el).serializeObject().name !== self.title()) {
+                                $(el).serializeObject().name !== self.title()) {
                             $(el).popover('show');
                             return false;
                         }
@@ -225,7 +226,7 @@
                         self.setDraggable(true);
                         self.getLayer().draw();
                     };
-                    
+
                     self._titleDialog.cancel = function() {
                         self._titleDialog.remove();
                         self._titleDialog = null;
@@ -260,6 +261,7 @@
         _createResizePoints: function() {
             if (!this._resizePoints ||
                     this._resizePoints.length < 4) {
+                var zIndex = this.getZIndex();
                 this._resizePoints.push(
                         new AppCreator.ResizePoint({
                     type: AppCreator.ResizePoint.Type.NorthWest,
@@ -284,6 +286,7 @@
 
                 for (var i in this._resizePoints) {
                     this.getParent().add(this._resizePoints[i]);
+                    this._resizePoints[i].setZIndex(zIndex);
                 }
             }
         },
@@ -306,7 +309,7 @@
                 this._border.setShadowEnabled(false);
                 this.fire('dragmove');
             }
-            
+
             this.getLayer().draw();
             this._isSelected = selected;
         },
