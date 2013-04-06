@@ -58,9 +58,25 @@ var AppCreator = {};
             }, false);
 
             self._stage.content.addEventListener("click", self._mouseToolClickEventListener, false);
+            
             $(self._stage.content).ready(function() {
                 self._offset = $(self._stage.content).offset();
             });
+
+            self._stage.content.addEventListener("contextmenu", function(e) {
+                e.preventDefault();
+                var pos = {x: e.layerX, y: e.layerY}, element,
+                intersection = self._stage.getIntersection(pos);
+                if (!intersection) {
+                    intersection = {'shape': self._stage.getIntersections(pos)[0]};
+                }
+                
+                element = AppCreator.GO.findAppCreatorParent(intersection.shape, 'Element');
+                AppCreator.clickedElement = null;
+                AppCreator.GO.resetSelection(element);
+                AppCreator.ContextMenu.instance.show(e);
+            }, false);
+
             self._stage.content.onmousedown = function(e) {
                 switch (AppCreator.selectedTool) {
                     case AppCreator.tools.AddElement:
@@ -73,11 +89,12 @@ var AppCreator = {};
                                 'x': x - 50,
                                 'y': y - 5,
                                 width: 100,
-                                height: 30,
+                                height: 50,
                                 draggable: true
                             });
 
                             self._layer.add(B);
+                            B.afterInit();
                             self._layer.draw();
                             AppCreator.selectedTool = AppCreator.tools.Mouse;
                             $('#toolbox button')[0].click();
@@ -170,19 +187,16 @@ var AppCreator = {};
             AppCreator.instance.currentAssoc.getParent().draw();
         },
         _mouseToolClickEventListener: function(evt) {
+            //console.log("clicked " + evt);
             if (Kinetic.DD.isDragging) {
                 Kinetic.DD.isDragging = false;
                 return;
             }
-            
-            if (AppCreator.selectedTool === AppCreator.tools.Mouse && !evt.ctrlKey) {
 
-                var childs = AppCreator.instance._layer.getChildren();
-                for (var i in childs) {
-                    if (childs[i].ACType === 'Element') {
-                        childs[i].setSelected(false);
-                    }
-                }
+            if (AppCreator.selectedTool === AppCreator.tools.Mouse && !evt.ctrlKey) {
+                AppCreator.GO.resetSelection(AppCreator.clickedElement);
+                
+                AppCreator.clickedElement = null;
             }
         }
     };

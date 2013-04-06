@@ -38,22 +38,36 @@
             AppCreator.GO.addGetters(constructor, arr);
         },
         /**
-         * recursivly finding parent with specified type
-         * @param {type} obj
-         * @param {type} actype
-         * @returns {@exp;obj@call;getParent}
+         * recursivly finding parent with specified type or 
+         * if not found then null
+         * @param {Object|Element|Attribute} obj
+         * @param {String|null} actype
+         * @returns {Element}
          */
         findAppCreatorParent: function(obj, actype) {
-            if (obj.getParent && obj.getParent().ACType) {
-                // ak sa typ zhoduje alebo nieje zadany hladany typ
-                if (actype && actype === obj.getParent().ACType ||
-                        !actype) {
-                    return obj.getParent();
+            // ak som trafil objekt s ACType skontrolujem ci to nieje to co hladam
+            if (obj && obj.ACType) {
+                if (actype && obj.ACType === actype || !actype) {
+                    return obj;
                 }
-            } else if (!obj.getParent) {
-                return null;
-            } else {
+            }
+
+            if (obj && obj.getParent) {
                 return this.findAppCreatorParent(obj.getParent(), actype);
+            } else {
+                return null;
+            }
+        },
+        resetSelection: function(except) {
+            var childs = AppCreator.instance._layer.getChildren(), i, child;
+            for (i in childs) {
+                child = childs[i];
+                if (child.ACType === 'Element') {
+                    if (except !== childs[i])
+                        child.setSelected(false);
+                    else
+                        child.setSelected(true);
+                }
             }
         }
     };

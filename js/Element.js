@@ -48,7 +48,7 @@
 
             this._renderTitle(false);
             self.on('click', function(evt) {
-                //evt.preventDefault();
+                AppCreator.clickedElement = this;
                 setTimeout(function() {
                     self.setSelected(true);
                 }, 100);
@@ -73,6 +73,11 @@
                 this.setX(newX);
                 this.setY(newY);
             });
+        },
+        afterInit: function() {
+            for (var i in AppCreator.CFG.presettedAttributes) {
+                this.addAttribute(AppCreator.CFG.presettedAttributes[i]);
+            }
         },
         _repositionAddAttrDialogs: function() {
             var self = this, i = 0, len = self._addAttrDialogs.length;
@@ -203,6 +208,7 @@
                     width: this.getMinSize().width
                 }));
                 this.resizeWithNewMinWidth(this._title.getWidth());
+
                 this._title.on('dblclick', function() {
                     self._titleDialog = new AppCreator.Dialogs.TitleDialog({
                         y: self.getAbsolutePosition().y,
