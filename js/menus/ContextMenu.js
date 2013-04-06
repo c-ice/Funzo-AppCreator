@@ -1,6 +1,7 @@
 /**
  * Base ContextMenu
  * <ul id="context1" class="dropdown-menu">
+ * TODO: nastylovat contextMenu title
  */
 (function() {
 
