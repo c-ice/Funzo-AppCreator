@@ -174,7 +174,8 @@ var AppCreator = {};
                 Kinetic.DD.isDragging = false;
                 return;
             }
-            if (AppCreator.selectedTool === AppCreator.tools.Mouse) {
+            
+            if (AppCreator.selectedTool === AppCreator.tools.Mouse && !evt.ctrlKey) {
 
                 var childs = AppCreator.instance._layer.getChildren();
                 for (var i in childs) {
