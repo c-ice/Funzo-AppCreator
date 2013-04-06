@@ -3,7 +3,7 @@
  * 
  */
 (function() {
-    AppCreator.Globals = {
+    AppCreator.GO = {
         addGetters: function(constructor, arr) {
             var len = arr.length;
             for (var n = 0; n < len; n++) {
@@ -34,10 +34,29 @@
             };
         },
         addGettersSetters: function(constructor, arr) {
-            AppCreator.Globals.addSetters(constructor, arr);
-            AppCreator.Globals.addGetters(constructor, arr);
+            AppCreator.GO.addSetters(constructor, arr);
+            AppCreator.GO.addGetters(constructor, arr);
+        },
+        /**
+         * recursivly finding parent with specified type
+         * @param {type} obj
+         * @param {type} actype
+         * @returns {@exp;obj@call;getParent}
+         */
+        findAppCreatorParent: function(obj, actype) {
+            if (obj.getParent && obj.getParent().ACType) {
+                // ak sa typ zhoduje alebo nieje zadany hladany typ
+                if (actype && actype === obj.getParent().ACType ||
+                        !actype) {
+                    return obj.getParent();
+                }
+            } else if (!obj.getParent) {
+                return null;
+            } else {
+                return this.findAppCreatorParent(obj.getParent(), actype);
+            }
         }
-    }
+    };
 
 })();
 
