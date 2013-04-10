@@ -9,6 +9,7 @@
         <script src="js/libs/jquery-1.9.0/jquery.serializeObject.js"></script>
         <script src="js/libs/jquery-1.9.0/jquery.nano.js"></script>
         <script src="js/libs/bootstrap.js"></script>
+        <script src="js/libs/IDBWrapper/idbstore.js"></script>
     </head>
     <body class="container-fluid">
         <div class="navbar navbar-inverse navbar-fixed-top">
@@ -44,6 +45,12 @@
                                 <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Something else here</a></li>
                                 <li role="presentation" class="divider"></li>
                                 <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Separated link</a></li>
+                            </ul>
+                        </li>
+                        <li class="dropdown">
+                            <a href="#" id="drop2" role="button" class="dropdown-toggle" data-toggle="dropdown">Settings <b class="caret"></b></a>
+                            <ul class="dropdown-menu" role="menu" aria-labelledby="drop2">
+                                <li role="presentation"><a role="menuitem" tabindex="-1" href="#predefinedAttrs" data-toggle="modal">Set pre-defined attributes</a></li>
                             </ul>
                         </li>
                         <li>
@@ -142,7 +149,7 @@
 
                     instance.getLayer().add(B);
                     B.afterInit();
-                    
+
                     B.addAttribute({name: "Collection", type: 'String'});
                     B.addAttribute({name: "Transaction", type: 'String'});
 
@@ -182,7 +189,26 @@
                 <button class="btn btn-mini btn-primary rightcolumn" type="submit"><i class="icon-ok"></i></button>
                 </form>
             </script>
-
+            <!-- Modal Settings predefind attrs -->            
+            <div id="predefinedAttrs" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                    <h3 id="myModalLabel">Pre-defined Attributes</h3>
+                </div>
+                <div class="modal-body">
+                    <p>
+                        <b>ID:</b>Number
+                    </p>
+                    <p>
+                        Thats mean every element has that attribute
+                    </p>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+                    <button class="btn btn-primary">Save changes</button>
+                </div>
+            </div>
+            <!-- Context Menu -->
             <ul id="context1" class="dropdown-menu">
                 <li><a ng-click="edit()">Edit</a></li>
                 <li><a ng-click="link()">Link</a></li>

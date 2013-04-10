@@ -48,10 +48,12 @@
 
             this._renderTitle(false);
             self.on('click', function(evt) {
-                AppCreator.clickedElement = this;
-                setTimeout(function() {
-                    self.setSelected(true);
-                }, 100);
+                if (AppCreator.selectedTool === AppCreator.tools.Mouse) {
+                    AppCreator.clickedElement = this;
+                    setTimeout(function() {
+                        self.setSelected(true);
+                    }, 100);
+                }
             });
 
             this.on('dragstart', function(e) {
