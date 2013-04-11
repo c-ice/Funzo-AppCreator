@@ -27,6 +27,9 @@
         AppCreator.CFG.presettedAttributesStore.getAll(function(data) {
             console.log(data);
             AppCreator.CFG.presettedAttributes = data;
+            $(document).ready(function() {
+                AppCreator.CFG.drawPresettedAttributes();
+            });
         });
 
     };
@@ -46,6 +49,20 @@
         onStoreReady: AppCreator.CFG.loadCFGs
     });
 
+    AppCreator.CFG.drawPresettedAttributes = function() {
+        var htmlStr = "", i = 0;
+
+        for (i in AppCreator.CFG.presettedAttributes) {
+            htmlStr += "<tr><td>" + i + "</td><td>"
+                    + AppCreator.CFG.presettedAttributes[i].name + "</td><td>"
+                    + AppCreator.CFG.presettedAttributes[i].type + "</td><td></td></tr>";
+        }
+
+        $("#predefinedAttrs tbody").html(htmlStr);
+    };
+
+    //---------------------------------------------------------
+
     AppCreator.CFG.typeahead = function(query) {
         $(query).typeahead({
             items: 4,
@@ -62,13 +79,13 @@
 
     $(document).ready(function() {
         AppCreator.CFG.typeahead("input[name='type']");
-        
+
         $('#predefinedAttrs form').on('submit', function(e) {
             e.preventDefault();
 
             var attr = $(this).serializeObject(), that = this;
 
-            AppCreator.CFG.addPresettedAttribute(attr, function(){
+            AppCreator.CFG.addPresettedAttribute(attr, function() {
                 console.log('success');
             });
 
