@@ -21,16 +21,16 @@
         AppCreator.CFG.presettedAttributesStore.put(attr, success);
         AppCreator.CFG.presettedAttributes.push(attr);
     };
-    
+
     AppCreator.CFG.loadCFGs = function() {
         console.log("ready...");
         AppCreator.CFG.presettedAttributesStore.getAll(function(data) {
             console.log(data);
             AppCreator.CFG.presettedAttributes = data;
         });
-        
+
     };
-    
+
     AppCreator.CFG.presettedAttributesStore = new IDBStore({
         storeName: 'presettedAttributes',
         storePrefix: 'CFG-',
@@ -46,6 +46,35 @@
         onStoreReady: AppCreator.CFG.loadCFGs
     });
 
+    AppCreator.CFG.typeahead = function(query) {
+        $(query).typeahead({
+            items: 4,
+            source: AppCreator.CFG.primitiveDataTypes,
+            matcher: function(item) {
+                if (this.query === '?') {
+                    return -1;
+                }
+
+                return ~item.toLowerCase().indexOf(this.query.toLowerCase());
+            }
+        });
+    };
+
+    $(document).ready(function() {
+        AppCreator.CFG.typeahead("input[name='type']");
+        
+        $('#predefinedAttrs form').on('submit', function(e) {
+            e.preventDefault();
+
+            var attr = $(this).serializeObject(), that = this;
+
+            AppCreator.CFG.addPresettedAttribute(attr, function(){
+                console.log('success');
+            });
+
+            return false;
+        });
+    });
 
 })();
 

@@ -16,6 +16,8 @@
 
             self.render();
             self._draw();
+            
+            AppCreator.CFG.typeahead("#" + self.getId() + " input[name='type']");
         },
         validate: function(el) {
             var o = $(el).serializeObject();

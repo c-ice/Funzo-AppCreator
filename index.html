@@ -183,7 +183,7 @@
                 <form class="simpleDialog" id='{0}'>
                 <div class="dialogBoxed" style="float: left;width: 100%;">
                 <input name="name" type="text" placeholder="Name" style="float:left" />
-                <input name="type" type="text" placeholder="Type" style="float:left"/>
+                <input name="type" type="text" placeholder="Type" style="float:left" class="typeahead" autocomplete="off"/>
                 </div>
                 <button class="btn btn-mini leftcolumn" type="reset"><i class="icon-remove"></i></button>
                 <button class="btn btn-mini btn-primary rightcolumn" type="submit"><i class="icon-ok"></i></button>
@@ -195,7 +195,7 @@
                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
                     <h3 id="myModalLabel">Pre-defined Attributes</h3>
                 </div>
-                <div class="modal-body">
+                <div class="modal-body" style="min-height: 300px">
                     <form class="form-inline">
                         <table class="table table-hover">
                             <thead>
@@ -218,9 +218,8 @@
                                         <input name="name" type="text" class="input-block-level" placeholder="Name">
                                     </td>
                                     <td>
-                                        <input name="type" type="text" class="input-block-level" placeholder="Type" 
-                                               data-provide="typeahead" data-items="4" 
-                                               data-source="['String', 'Number', 'Bool', 'Reference']"
+                                        <input name="type" type="text" class="input-block-level typeahead" placeholder="Type" 
+                                               
                                                autocomplete="off">
                                     </td>
                                     <td>
@@ -251,14 +250,6 @@
                     <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
                 </div>
             </div>
-            <!-- Context Menu -->
-            <ul id="context1" class="dropdown-menu">
-                <li><a ng-click="edit()">Edit</a></li>
-                <li><a ng-click="link()">Link</a></li>
-                <li><a ng-click="delete()">Delete</a></li>
-                <li class="divider"></li>
-                <li><a ng-click="properties()">Properties</a></li>
-            </ul>
         </div>
     </body>
 </html>
