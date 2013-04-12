@@ -18,12 +18,23 @@
      * @returns {undefined}
      */
     AppCreator.CFG.addPresettedAttribute = function(attr, success) {
-        AppCreator.CFG.presettedAttributesStore.put(attr, success);
-        AppCreator.CFG.presettedAttributes.push(attr);
+        AppCreator.CFG.presettedAttributesStore.put(attr, success || function(id) {
+            attr.id = id;
+            AppCreator.CFG.presettedAttributes.push(attr);
+            AppCreator.CFG.drawPresettedAttributes();
+        });
+    };
+
+    AppCreator.CFG.removePresettedAttribute = function(key) {
+        AppCreator.CFG.presettedAttributesStore.remove(key, function(removed) {
+            AppCreator.CFG.presettedAttributes = jQuery.grep(AppCreator.CFG.presettedAttributes, function(item) {
+                return item.id !== key;
+            });
+            AppCreator.CFG.drawPresettedAttributes();
+        });
     };
 
     AppCreator.CFG.loadCFGs = function() {
-        console.log("ready...");
         AppCreator.CFG.presettedAttributesStore.getAll(function(data) {
             console.log(data);
             AppCreator.CFG.presettedAttributes = data;
@@ -31,7 +42,6 @@
                 AppCreator.CFG.drawPresettedAttributes();
             });
         });
-
     };
 
     AppCreator.CFG.presettedAttributesStore = new IDBStore({
@@ -53,9 +63,11 @@
         var htmlStr = "", i = 0;
 
         for (i in AppCreator.CFG.presettedAttributes) {
-            htmlStr += "<tr><td>" + i + "</td><td>"
+            htmlStr += "<tr><td>" + AppCreator.CFG.presettedAttributes[i].id + "</td><td>"
                     + AppCreator.CFG.presettedAttributes[i].name + "</td><td>"
-                    + AppCreator.CFG.presettedAttributes[i].type + "</td><td></td></tr>";
+                    + AppCreator.CFG.presettedAttributes[i].type + "</td><td>"
+                    + "<button type='button' class='btn btn-danger' onclick='AppCreator.CFG.removePresettedAttribute(" 
+                    + AppCreator.CFG.presettedAttributes[i].id + ")'>Remove</button></td></tr>";
         }
 
         $("#predefinedAttrs tbody").html(htmlStr);
@@ -83,11 +95,9 @@
         $('#predefinedAttrs form').on('submit', function(e) {
             e.preventDefault();
 
-            var attr = $(this).serializeObject(), that = this;
+            var attr = $(this).serializeObject();
 
-            AppCreator.CFG.addPresettedAttribute(attr, function() {
-                console.log('success');
-            });
+            AppCreator.CFG.addPresettedAttribute(attr);
 
             return false;
         });
