@@ -11,6 +11,8 @@
             this.attrs.points = [];
             this._target = null;
             this._source = null;
+            this._sourceNameText = null;
+            this._sourceCountingText = null;
 
             Kinetic.Line.call(this, config);
 
@@ -18,10 +20,30 @@
             this.attrs.strokeWidth = 1;
 
             this.ACType = 'Association';
-            this.on('mousedown', function(e) {
+            self.on('mousedown', function(e) {
                 var point = self.addMovePoint([e.layerX, e.layerY]);
                 point.getParent().draw();
                 point.fire('mousedown');
+            });
+            
+            this._sourceNameText = new Kinetic.Text({
+                    // x,y when drawing
+                    text: "-class",
+                    fontSize: 13,
+                    fontFamily: 'Calibri',
+                    fill: 'black',
+                    align: 'center',
+                    width: 50
+            });
+            
+            this._sourceCountingText = new Kinetic.Text({
+                    // x,y when drawing
+                    text: "*",
+                    fontSize: 14,
+                    fontFamily: 'Calibri',
+                    fill: 'black',
+                    align: 'center',
+                    width: 50
             });
         },
         addMovePoint: function() {
@@ -117,17 +139,6 @@
 
                 this.getParent().draw();
             }
-//            var previous = getStart();
-//            for (var i = 0; i < breakPoints.size(); i++) {
-//                var current = breakPoints.get(i);
-//                var next = i < (breakPoints.size() - 1) ? breakPoints.get(i + 1) : getEnd();
-//                var tolerance = Math.round(0.1 * previous.distance(next));
-//                if (GraphicsTools.isPointNearSegment(previous, next, current, tolerance)) {
-//                    breakPoints.remove(i--);
-//                } else {
-//                    previous = breakPoints.get(i);
-//                }
-//            }
         },
         setTarget: function(target) {
             var self = this, x = 0, y = 0, point;
@@ -165,6 +176,8 @@
             });
 
             self._target = target;
+            
+            self.getParent().add(this._sourceCountingText);
         },
         getTarget: function() {
             return this._target;
@@ -216,6 +229,10 @@
                 context.lineTo(point.getX(), point.getY());
             }
 
+            //TODO: add drawing off text;
+            if (this._sourceCountingText)
+                this._sourceCountingText.setPosition([points[0].getX(), points[0].getY() - 10]);
+
             canvas.stroke(this);
         },
         drawHitFunc: function(canvas) {
@@ -238,4 +255,10 @@
 
     Kinetic.Node.addGetterSetter(AppCreator.Association, 'targetOffset', {x: 0, y: 0});
     Kinetic.Node.addGetterSetter(AppCreator.Association, 'sourceOffset', {x: 0, y: 0});
+    
+    Kinetic.Node.addGetterSetter(AppCreator.Association, 'sourceName');
+    Kinetic.Node.addGetterSetter(AppCreator.Association, 'targetName');
+    
+    Kinetic.Node.addGetterSetter(AppCreator.Association, 'targetCounting');
+    Kinetic.Node.addGetterSetter(AppCreator.Association, 'sourceCounting');
 })();
