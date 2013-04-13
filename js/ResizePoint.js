@@ -79,6 +79,7 @@
                     }
 
                     self._dragStartX = self.getX();
+                    self._target.resizeToNewSize(newWidth, newHeight);
                 }
                 if (self._dragStartY !== self.getY()) {
                     var deltaY = self._dragStartY - self.getY();
@@ -101,26 +102,27 @@
                     }
 
                     self._dragStartY = self.getY();
+                    self._target.resizeToNewSize(newWidth, newHeight);
+                    
                 }
 
-                self._target.resizeToNewSize(newWidth, newHeight);
-                self._target.getParent().draw();
+                self._target.getParent().draw();    
             });
 
             self._target.on('dragmove', function() {
                 self.setType(self._type);
             });
 
-            self._target.on('dragstart', function() {
-//                var old = self.getParent();
-//                self.moveTo(this.getParent());
-//                old.draw();
-            });
+//            self._target.on('dragstart', function() {
+////                var old = self.getParent();
+////                self.moveTo(this.getParent());
+////                old.draw();
+//            });
 
-            self._target.on('dragend', function() {
-//                self.moveTo(this.getParent());
-//                this.getParent().draw();
-            });
+//            self._target.on('dragend', function() {
+////                self.moveTo(this.getParent());
+////                this.getParent().draw();
+//            });
 
             self._target.on('widthChange', function(evt) {
                 if (!self._dragStartX) {
