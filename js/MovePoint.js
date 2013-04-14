@@ -84,10 +84,10 @@
                     pos.x = self.getX() - self.getTarget().getX();
                     pos.y = self.getY() - self.getTarget().getY();
 
-                    if (self.getOwner().getTarget() === self.getTarget()) {
-                        self.getOwner().setTargetOffset(pos);
-                    } else {
+                    if (self.getOwner().getPoints()[0] === self) {
                         self.getOwner().setSourceOffset(pos);
+                    } else {
+                        self.getOwner().setTargetOffset(pos);
                     }
                 }
 
@@ -108,15 +108,15 @@
         },
         snapToGrid: function() {
 
-            if (this.getTarget() !== undefined) {
-                var targetOffset = this.getOwner().getTargetOffset(),
-                        targetSize = this.getTarget().getSize();
-
-                targetOffset.x = (Math.min(Math.max(Math.floor(targetOffset.x / AppCreator.gridSize) * AppCreator.gridSize, 0), targetSize.width));
-                targetOffset.y = (Math.min(Math.max(Math.floor(targetOffset.y / AppCreator.gridSize) * AppCreator.gridSize, 0), targetSize.height));
-
-                this.getOwner().setTargetOffset(targetOffset);
-            }
+//            if (this.getTarget() !== undefined) {
+//                var targetOffset = this.getOwner().getTargetOffset(),
+//                        targetSize = this.getTarget().getSize();
+//
+//                targetOffset.x = (Math.min(Math.max(Math.floor(targetOffset.x / AppCreator.gridSize) * AppCreator.gridSize, 0), targetSize.width));
+//                targetOffset.y = (Math.min(Math.max(Math.floor(targetOffset.y / AppCreator.gridSize) * AppCreator.gridSize, 0), targetSize.height));
+//
+//                this.getOwner().setTargetOffset(targetOffset);
+//            }
         },
         drawHitFunc: function(canvas) {
             var context = canvas.getContext();
