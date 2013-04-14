@@ -14,6 +14,7 @@
 
             self.setTemplateId('TitleDialogTpl');
             self.attrs.templateParams['1'] = config.title || "";
+            self.attrs.templateParams['2'] = config.placeholder || "Title";
             self.render();
             self._draw();
         },
