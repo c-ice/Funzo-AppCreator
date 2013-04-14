@@ -113,6 +113,7 @@
             <script src="js/dialogs/Dialogs.js"></script>
             <script src="js/dialogs/SimpleDialog.js"></script>
             <script src="js/dialogs/TitleDialog.js"></script>
+            <script src="js/dialogs/CountingTextDialog.js"></script>
             <script src="js/shapes/Arrow.js"></script>
             <script src="js/Element.js"></script>
             <script src="js/Attribute.js"></script>
@@ -172,7 +173,21 @@
             <script id="TitleDialogTpl" type="text/template">
                 <form class="titleDialog" id="{0}" data-content="That classname alredy exists.">
                 <div class="dialogBoxed" style="float: left;width: 100%;">
-                <input name="name" value="{1}" type="text" placeholder="Title" style="text-align: center;width: 100%" />
+                <input name="name" value="{1}" type="text" placeholder="{2}" style="text-align: center;width: 100%" />
+                </div>
+                <button class="btn btn-mini leftcolumn" type="reset"><i class="icon-remove"></i></button>
+                <button class="btn btn-mini btn-primary rightcolumn" type="submit"><i class="icon-ok"></i></button>
+                </form>
+            </script>
+
+            <script id="CountingTextDialogTpl" type="text/template">
+                <form class="countingTextDialog titleDialog" id="{0}" data-content="That classname alredy exists.">
+                <div class="dialogBoxed" style="float: left;width: 100%;">
+                <select name='counting' style="text-align: center;width: 100%">
+                <option>*</option>
+                <option>1</option>
+                <option>0..1</option>
+                </select>
                 </div>
                 <button class="btn btn-mini leftcolumn" type="reset"><i class="icon-remove"></i></button>
                 <button class="btn btn-mini btn-primary rightcolumn" type="submit"><i class="icon-ok"></i></button>
@@ -219,7 +234,7 @@
                                     </td>
                                     <td>
                                         <input name="type" type="text" class="input-block-level typeahead" placeholder="Type" 
-                                               
+
                                                autocomplete="off">
                                     </td>
                                     <td>

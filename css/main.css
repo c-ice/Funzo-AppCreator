@@ -64,6 +64,10 @@ body {
     float: left;
 }
 
+.countingTextDialog .leftcolumn, .countingTextDialog .rightcolumn {
+    top: -35px;
+}
+
 .leftcolumn{
     float: left;
     width: 28px;
