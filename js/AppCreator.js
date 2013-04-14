@@ -119,13 +119,13 @@ var AppCreator = {};
                                         self.currentAssoc.addMovePoint(pos);
                                         this.addEventListener('mousemove', self._assocMouseMoveEventListener, false);
                                     } else {
-                                        if (intersects[i] !== self.currentAssoc.getSource()) {
+                                        //if (intersects[i].getParent() !== self.currentAssoc.getSource()) {
                                             this.removeEventListener('mousemove', self._assocMouseMoveEventListener, false);
                                             self.currentAssoc.getPoints().pop().destroy();
                                             self.currentAssoc.setTarget(intersects[i].getParent());
                                             intersects[i].getParent().fire('dragmove');
                                             self.currentAssoc = null;
-                                        }
+                                        //}
                                     }
 
                                     break;
