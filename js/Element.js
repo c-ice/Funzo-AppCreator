@@ -431,7 +431,7 @@
         },
         canBeDragged: function() {
             if (this._addAttrDialogs.length > 0 ||
-                    this._titleDialog !== null) {
+                    this._titleDialog !== null || this.getNotDraggable()) {
                 return false;
             }
 
@@ -440,4 +440,7 @@
     };
 
     Kinetic.Global.extend(AppCreator.Element, Kinetic.Group);
+    
+    // another reasons  why cant be element dragged
+    Kinetic.Node.addGetterSetter(AppCreator.Element, 'notDraggable', false);
 })();
