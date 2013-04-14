@@ -119,6 +119,7 @@ var AppCreator = {};
                                         self.currentAssoc.addMovePoint(pos);
                                         this.addEventListener('mousemove', self._assocMouseMoveEventListener, false);
                                     } else {
+                                        //TODO: when only 2 points are setted asscoation is un reachable
                                         //if (intersects[i].getParent() !== self.currentAssoc.getSource()) {
                                             this.removeEventListener('mousemove', self._assocMouseMoveEventListener, false);
                                             self.currentAssoc.getPoints().pop().destroy();
