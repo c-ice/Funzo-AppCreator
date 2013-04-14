@@ -168,5 +168,18 @@
         return Math.abs((p.x - a.x) * (b.y - a.y) - (p.y - a.y) * (b.x - a.x)) / normalLength;
     };
 
+    /**
+     * 
+     * @param {Point|MovePoint} A
+     * @param {Point|MovePoint} B
+     * @returns {Number}
+     */
+    AppCreator.GraphicTools.radiansFromPoints = function(A, B) {
+        if (A.getX && B.getX) {
+            return Math.atan(Math.abs(A.getY() - B.getY())/(Math.abs(A.getX() - B.getX())));
+        } else {
+            return Math.atan(((A.x - B.x) / (A.y - B.y))|0);
+        }
+    };
 
 })();
