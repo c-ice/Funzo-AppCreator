@@ -54,6 +54,7 @@
                     self.getDOM().css({
                         'display': 'none'
                     });
+                    self.setTarget(null);
                 }
             });
         },
@@ -70,19 +71,21 @@
 
             return this;
         },
-        show: function(event) {
+        show: function(event, target) {
             this.getDOM().css({
                 //position: "fixed",
                 display: "block",
                 left: event.clientX + 'px',
                 top: event.clientY + 'px'
             });
+            
+            this.setTarget(target);
 
             this.setLast(event.timeStamp);
         }
     };
 
-    AppCreator.GO.addGettersSetters(AppCreator.ContextMenu.Basic, ['DOM', 'id', 'title', 'selector', 'last']);
+    AppCreator.GO.addGettersSetters(AppCreator.ContextMenu.Basic, ['DOM', 'id', 'title', 'selector', 'last', 'target']);
 
     AppCreator.ContextMenu.instance = new AppCreator.ContextMenu.Basic({
         title: "ContextMenu",
@@ -90,10 +93,14 @@
             {
                 title: 'Remove',
                 action: function(e) {
-                    console.log("removed...");
+                    if (AppCreator.ContextMenu.instance.getTarget()) {
+                        AppCreator.ContextMenu.instance.getTarget().remove();
+                        AppCreator.ContextMenu.instance.setTarget(null);
+                        AppCreator.instance.getStage().draw();
+                    }
                 }
             }, {
-                title: 'Add',
+                title: 'Whatever',
                 action: function(e) {
                     console.log("Added... ");
                 }

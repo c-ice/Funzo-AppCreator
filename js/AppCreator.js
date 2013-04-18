@@ -74,7 +74,7 @@ var AppCreator = {};
                 element = AppCreator.GO.findAppCreatorParent(intersection.shape, 'Element');
                 AppCreator.clickedElement = null;
                 AppCreator.GO.resetSelection(element);
-                AppCreator.ContextMenu.instance.show(e);
+                AppCreator.ContextMenu.instance.show(e, element);
             }, false);
 
             self._stage.content.onmousedown = function(e) {
