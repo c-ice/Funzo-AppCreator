@@ -97,7 +97,7 @@
         setTarget: function(val) {
             if (val !== undefined) {
                 var self = this;
-                val.on('resize', function() {
+                val.on('resize.assoc', function() {
                     var pos = self.attrs['dragBoundFunc'](self.getPosition());
                     self.setPosition(pos);
                     self.fire('dragmove');

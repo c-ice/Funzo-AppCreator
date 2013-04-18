@@ -454,12 +454,20 @@
          * @returns {undefined}
          */
         remove: function() {
-            for (var i in this._resizePoints) {
+            var i, assocs = AppCreator.instance.getLinesLayer().getChildren();
+            for (i in this._resizePoints) {
                 this._resizePoints[i].remove();
             }
-            
-            Kinetic.Node.prototype.remove.call(this);
 
+            for (i in assocs) {
+                if (assocs[i].ACType && assocs[i].ACType === 'Association' &&
+                        (assocs[i].getTarget() === this || assocs[i].getSource() === this))
+                {
+                    assocs[i].remove();
+                }
+            }
+
+            Kinetic.Node.prototype.remove.call(this);
         }
     };
 
