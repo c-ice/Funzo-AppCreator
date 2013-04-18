@@ -325,8 +325,9 @@
             return (this._attributes.length ? this._attributes.length + 1 : 1) * this.attributesDrawHeight;
         },
         addAttribute: function(attribute) {
+            var attr = null;
             if (typeof this._attributes[attribute.name] === 'undefined') {
-                var attr = new AppCreator.Attribute({
+                attr = new AppCreator.Attribute({
                     x: 0,
                     y: this._newAttributeY(),
                     width: this.getWidth(),
@@ -358,6 +359,8 @@
             }
 
             this.getLayer().draw();
+
+            return attr || this._attributes[attribute.name];
         },
         resizeToNewSize: function(newWidth, newHeight) {
             var delta = {width: 0, height: 0};
@@ -392,7 +395,8 @@
             this.fire('resize', delta);
         },
         resizeWithNewMinWidth: function(newMinWidth) {
-            var calculated = newMinWidth, delta = this.getWidth();
+            var calculated = newMinWidth, delta = this.getWidth(),
+                    dHeight = this._minSize.height - this.getHeight();
             if (this.getWidth() < newMinWidth) {
                 this.setWidth(calculated);
                 this._minSize.width = newMinWidth;
@@ -416,7 +420,15 @@
                 }
             }
 
-            this.fire('resize', {width: newMinWidth - delta, height: 0});
+            if (dHeight > 0) {
+                this.setHeight(this._minSize.height);
+                this._border.setHeight(this._minSize.height);
+            }
+
+            this.fire('resize', {
+                width: newMinWidth - delta,
+                height: dHeight > 0 ? dHeight : 0
+            });
 
             return calculated;
         },
@@ -436,11 +448,23 @@
             }
 
             return true;
+        },
+        /**
+         * Override Kinetic.Node.prototype.remove
+         * @returns {undefined}
+         */
+        remove: function() {
+            for (var i in this._resizePoints) {
+                this._resizePoints[i].remove();
+            }
+            
+            Kinetic.Node.prototype.remove.call(this);
+
         }
     };
 
     Kinetic.Global.extend(AppCreator.Element, Kinetic.Group);
-    
+
     // another reasons  why cant be element dragged
     Kinetic.Node.addGetterSetter(AppCreator.Element, 'notDraggable', false);
 })();
