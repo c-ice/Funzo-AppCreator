@@ -11,7 +11,7 @@
     AppCreator.MovePoint.prototype = {
         _initMovePoint: function(config) {
             var self = this;
-            
+
             self.createAttrs();
             // call super constructor
             Kinetic.Circle.call(self, config);
@@ -97,7 +97,7 @@
         setTarget: function(val) {
             if (val !== undefined) {
                 var self = this;
-                val.on('resize.assoc', function() {
+                val.on('resize' + self.getOwner().getId(), function() {
                     var pos = self.attrs['dragBoundFunc'](self.getPosition());
                     self.setPosition(pos);
                     self.fire('dragmove');

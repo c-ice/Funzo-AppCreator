@@ -3,6 +3,9 @@
     AppCreator.Association = function(config) {
         this._initAssociation(config);
     };
+    
+    AppCreator.Association._counter = 0;
+    
     AppCreator.Association.prototype = {
         _initAssociation: function(config) {
             var self = this;
@@ -15,6 +18,9 @@
             this._targetNameText = null;
             this._targetCountingText = null;
             Kinetic.Line.call(this, config);
+            
+            this.setId('.assoc'+AppCreator.Association._counter ++);
+            
             this.attrs.stroke = 'black';
             this.attrs.strokeWidth = 1;
             this.ACType = 'Association';
@@ -209,7 +215,7 @@
             var self = this, x = 0, y = 0, point;
             // remove listner
             if (self._target) {
-                self._target.off('.assoc');
+                self._target.off(this.getId());
                 self._target = null;
             }
 
@@ -235,11 +241,12 @@
             point = self.addMovePoint([x, y]);
             point.setIsStatic(true);
             point.setTarget(target);
-            target.on('dragmove.assoc resize.assoc', function() {
-                point.setX(this.getX() + self.getTargetOffset().x);
-                point.setY(this.getY() + self.getTargetOffset().y);
-                self.getParent().draw();
-            });
+            target.on('dragmove' + this.getId() + ' resize' + this.getId(),
+                    function() {
+                        point.setX(this.getX() + self.getTargetOffset().x);
+                        point.setY(this.getY() + self.getTargetOffset().y);
+                        self.getParent().draw();
+                    });
             self._target = target;
             self.getParent().add(this._sourceCountingText);
             self.getParent().add(this._sourceNameText);
@@ -256,7 +263,7 @@
             var self = this, x = 0, y = 0, xOffset, point;
             // remove listner
             if (self._source) {
-                self._source.off('.assoc');
+                self._source.off(self.getId());
                 self._source = null;
             }
             if (!source) {
@@ -279,11 +286,12 @@
             point = self.addMovePoint([x, y]);
             point.setIsStatic(true);
             point.setTarget(source);
-            source.on('dragmove.assoc resize.assoc', function() {
-                point.setX(this.getX() + self.getSourceOffset().x);
-                point.setY(this.getY() + self.getSourceOffset().y);
-                self.getParent().draw();
-            });
+            source.on('dragmove' + self.getId() + ' resize' + self.getId(),
+                    function() {
+                        point.setX(this.getX() + self.getSourceOffset().x);
+                        point.setY(this.getY() + self.getSourceOffset().y);
+                        self.getParent().draw();
+                    });
             self._source = source;
         },
         getSource: function() {
