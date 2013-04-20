@@ -65,16 +65,17 @@ var AppCreator = {};
 
             self._stage.content.addEventListener("contextmenu", function(e) {
                 e.preventDefault();
-                var pos = {x: e.layerX, y: e.layerY}, element,
+                var pos = {x: e.layerX, y: e.layerY}, element, assoc,
                 intersection = self._stage.getIntersection(pos);
                 if (!intersection) {
                     intersection = {'shape': self._stage.getIntersections(pos)[0]};
                 }
                 
                 element = AppCreator.GO.findAppCreatorParent(intersection.shape, 'Element');
+                assoc = (intersection.shape && intersection.shape.getOwner ? intersection.shape.getOwner():null);
                 AppCreator.clickedElement = null;
                 AppCreator.GO.resetSelection(element);
-                AppCreator.ContextMenu.instance.show(e, element);
+                AppCreator.ContextMenu.instance.show(e, assoc || element);
             }, false);
 
             self._stage.content.onmousedown = function(e) {
