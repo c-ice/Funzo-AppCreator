@@ -8,6 +8,7 @@
         <script src="js/libs/jquery-1.9.0/jquery.min.js"></script>
         <script src="js/libs/jquery-1.9.0/jquery.serializeObject.js"></script>
         <script src="js/libs/jquery-1.9.0/jquery.nano.js"></script>
+        <script src="js/libs/jquery-1.9.0/jquery-ui-1.10.2.custom.min.js"></script>
         <script src="js/libs/bootstrap.js"></script>
         <script src="js/libs/IDBWrapper/idbstore.js"></script>
     </head>
@@ -17,35 +18,20 @@
                 <div class="container" style="width: auto;margin-left: 50px;">
                     <a class="brand" href="#">AppCreator</a>
                     <ul class="nav" role="navigation">
-                        <li class="dropdown">
-                            <a id="drop1" href="#" role="button" class="dropdown-toggle" data-toggle="dropdown">File <b class="caret"></b></a>
-                            <ul class="dropdown-menu" role="menu" aria-labelledby="drop1">
-                                <li role="presentation"><a role="menuitem" tabindex="-1" href="http://google.com">Action</a></li>
-                                <li role="presentation"><a role="menuitem" tabindex="-1" href="#anotherAction">Another action</a></li>
-                                <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Something else here</a></li>
-                                <li role="presentation" class="divider"></li>
-                                <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Separated link</a></li>
-                            </ul>
+                        <li>
+                             <a role="button" data-toggle="tab" data-tool="1"><i class="icon-move"></i>Mouse</a>
                         </li>
-                        <li class="dropdown">
-                            <a id="drop1" href="#" role="button" class="dropdown-toggle" data-toggle="dropdown">Edit <b class="caret"></b></a>
-                            <ul class="dropdown-menu" role="menu" aria-labelledby="drop1">
-                                <li role="presentation"><a role="menuitem" tabindex="-1" href="http://google.com">Action</a></li>
-                                <li role="presentation"><a role="menuitem" tabindex="-1" href="#anotherAction">Another action</a></li>
-                                <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Something else here</a></li>
-                                <li role="presentation" class="divider"></li>
-                                <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Separated link</a></li>
-                            </ul>
+                        <li>
+                             <a role="button" data-toggle="tab" data-tool="2">Association</a>
                         </li>
-                        <li class="dropdown">
-                            <a href="#" id="drop2" role="button" class="dropdown-toggle" data-toggle="dropdown">View <b class="caret"></b></a>
-                            <ul class="dropdown-menu" role="menu" aria-labelledby="drop2">
-                                <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Action</a></li>
-                                <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Another action</a></li>
-                                <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Something else here</a></li>
-                                <li role="presentation" class="divider"></li>
-                                <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Separated link</a></li>
-                            </ul>
+                        <li>
+                             <a role="button" data-toggle="tab" data-tool="3"><i class="icon-tasks"></i>Element</a>
+                        </li>
+                        <li>
+                             <a role="button" data-toggle="tab" data-tool="4">Attribute</a>
+                        </li>
+                        <li class="divider-vertical">
+                            
                         </li>
                         <li class="dropdown">
                             <a href="#" id="drop2" role="button" class="dropdown-toggle" data-toggle="dropdown">Settings <b class="caret"></b></a>
@@ -56,6 +42,7 @@
                         <li>
                             <a role="button" href="#aboutDialog" data-toggle="modal" >About</a>
                         </li>
+                        
                     </ul>
                 </div>
             </div>
@@ -80,6 +67,7 @@
                         <li class="active"><a href="#modelContainer" data-toggle="tab">Model</a></li>
                         <li><a href="#lB" data-toggle="tab">View</a></li>
                         <li><a href="#lC" data-toggle="tab">Controller</a></li>
+                        <li><a href="#lD" data-toggle="tab">Router</a></li>
                     </ul>
                     <div class="tab-content">
                         <div class="tab-pane active" id="modelContainer">
@@ -91,18 +79,40 @@
                         <div class="tab-pane" id="lC">
                             <p>What up girl, this is Section C.</p>
                         </div>
+                        <div class="tab-pane" id="lD">
+                            <p>Router will be here Soon.</p>
+                        </div>
                     </div>
                 </div>
             </div>
-            <div class="span2">
-                <ul class="nav nav-list affix span2">
-                    <li class="nav-header">Properties</li>
-                    <li class="active"><a href="#">Type</a></li>
-                    <li><a href="#">Name</a></li>
-                    <li class="divider"></li>
-                    <li><a href="#">Next Group</a></li>
-                </ul>
-            </div>
+            <form class="properties  modal affix"> 
+                <div  class="modal-header">
+                    Properties
+                </div>
+                <div class="modal-body">
+                    <div class="controls controls-row"> 
+                        <label class="control-label">Type</label>
+                        <input type="text" name="type" placeholder="Type">  
+                    </div>
+                    <div class="controls controls-row">
+                        <label class="control-label">Name</label>
+                        <input type="text" name="name" placeholder="Name">
+                    </div>
+                    <div class="controls controls-row">
+                        <label class="control-label">Name</label>
+                        <input type="text" name="name" placeholder="Name">
+                    </div>
+                    <div class="controls controls-row">
+                        <label class="control-label">Name</label>
+                        <input type="text" name="name" placeholder="Name">
+                    </div>
+
+                </div>
+                <div class="modal-footer controls-row">
+                    <button style="float:right" type="submit" class="btn btn-small btn-primary">Save</button>
+                </div>
+
+            </form>
             <script src="js/libs/kinetic-vcurrent.js" ></script>        
             <script src="js/AppCreator.js"></script>
             <script src="js/utils/Global.js"></script>

@@ -88,3 +88,18 @@ body {
     width: 6px;
     background-color: #cccccc;
 }
+
+.properties {
+    width: 200px;
+    left: auto;
+    right:0;
+    top: 90px
+}
+
+.properties .modal-footer {
+    padding: 9px 15px 10px;
+}
+
+.properties input {
+    width: auto;
+}
