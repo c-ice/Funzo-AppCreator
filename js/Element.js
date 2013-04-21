@@ -196,7 +196,8 @@
                     y: 0,
                     width: this.getWidth(),
                     name: "",
-                    type: ""
+                    type: "",
+                    canSelect: false
                 });
                 this._title.setKineticText(new Kinetic.Text({
                     id: 'title',

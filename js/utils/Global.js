@@ -69,6 +69,14 @@
                         child.setSelected(true);
                 }
             }
+            
+            if (AppCreator.Attribute.selectedAttribute && 
+                    AppCreator.Attribute.selectedAttribute.getParent() !== except) 
+            {
+                AppCreator.Attribute.selectedAttribute.setSelected(false);
+                AppCreator.Attribute.selectedAttribute.getParent().draw();
+                AppCreator.Attribute.selectedAttribute = null;
+            }
         }
     };
 
