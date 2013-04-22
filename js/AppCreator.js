@@ -98,7 +98,7 @@ var AppCreator = {};
                             B.afterInit();
                             self._layer.draw();
                             AppCreator.selectedTool = AppCreator.tools.Mouse;
-                            $('#toolbox button')[0].click();
+                            $('ul.nav a.toolButton')[0].click();
                             B.fire('mousedown');
                             break;
                         }

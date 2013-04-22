@@ -38,7 +38,7 @@
             if (config.items) {
                 for (var i in config.items) {
                     if (config.items[i].action)
-                        this.addItem(config.items[i].title, config.items[i].action);
+                        this.addItem(config.items[i].title, config.items[i].action, config.items[i].icon);
                     else
                         this.addDivider();
                 }
@@ -63,11 +63,24 @@
 
             return this;
         },
-        addItem: function(title, action) {
-            this.getDOM().append($('<li>/').append($('<a/>', {
+        /**
+         * 
+         * @param {String} title
+         * @param {Function} action
+         * @param {String|undefined} icon class
+         * @returns {AppCreator.ContextMenu.Basic.prototype}
+         */
+        addItem: function(title, action, icon) {
+            var i = '';
+            if (icon) {
+                i = $('<i/>').addClass(icon);
+                title = ' ' + title;
+            }
+            
+            this.getDOM().append($('<li/>').append($('<a/>', {
                 text: title,
                 click: action
-            })));
+            }).prepend(i)));
 
             return this;
         },
@@ -78,7 +91,7 @@
                 left: event.clientX + 'px',
                 top: event.clientY + 'px'
             });
-            
+
             this.setTarget(target);
 
             this.setLast(event.timeStamp);
@@ -92,6 +105,7 @@
         items: [
             {
                 title: 'Remove',
+                icon: 'icon-remove',
                 action: function(e) {
                     if (AppCreator.ContextMenu.instance.getTarget()) {
                         AppCreator.ContextMenu.instance.getTarget().remove();
@@ -99,6 +113,8 @@
                         AppCreator.instance.getStage().draw();
                     }
                 }
+            },{
+                
             }, {
                 title: 'Whatever',
                 action: function(e) {
