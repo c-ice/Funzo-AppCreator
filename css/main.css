@@ -93,7 +93,10 @@ body {
     width: 200px;
     left: auto;
     right:0;
-    top: 60px
+    top: 60px;
+    -webkit-transform-origin: 100% 0px;
+    transform-origin:100% 0;
+    -ms-transform-origin:100% 0; /* IE 9 */
 }
 
 .properties .modal-footer {
@@ -102,4 +105,7 @@ body {
 
 .properties input {
     width: auto;
+}
+.properties select {
+    max-width: 160px;
 }

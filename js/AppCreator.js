@@ -31,10 +31,10 @@ var AppCreator = {};
                 AppCreator.otherInstances[i].setSelectedTool(tool);
             }
         }
-        
+
         AppCreator.selectedTool = tool;
     };
-    
+
     AppCreator.models = [];
 
     AppCreator.clickedElement = null;
@@ -49,11 +49,11 @@ var AppCreator = {};
         // lazy load
         if (!ins) {
             ins = new AppCreator.Root({
-                container: instance+"Container",
+                container: instance + "Container",
                 type: instance
             });
         }
-        
+
         AppCreator.instance = ins;
     };
 
@@ -79,7 +79,7 @@ var AppCreator = {};
          */
         _init: function(config) {
             var self = this;
-            
+
             self._stage = new Kinetic.Stage({
                 container: config.container || 'container',
                 width: 1920,
@@ -208,6 +208,9 @@ var AppCreator = {};
         getDOMOffset: function() {
             return this._offset;
         },
+        fire: function(evt) {
+            $(this).trigger(evt);
+        },
         setSelectedTool: function(tool) {
             if (tool === this._selectedTool) {
                 return;
@@ -226,7 +229,7 @@ var AppCreator = {};
                     }
                 }
             }
-            
+
             this._selectedTool = tool;
             $(this).trigger("selectedToolChanged");
         },

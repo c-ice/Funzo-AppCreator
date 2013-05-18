@@ -3,6 +3,11 @@
         return this._initProperty(config);
     };
 
+
+    /**
+     * Hold propertie value, name and other props
+     * automatic oneWay binding from UI to value with change event
+     */
     AppCreator.CFG.Property.prototype = {
         _initProperty: function(config) {
             if (this.attrs === undefined) {
@@ -16,11 +21,13 @@
                 return true;
             });
             this.setValue(config.value || "");
-
-
+            this.setTypeLimitation(config.typeLimitation || "all");
+            this.setValues(config.values || []);
         },
         getDOM: function(where) {
-            if (!this._dom) {
+              // TODO: BUG is here missing events after remove from document 
+              // workaround still creating new dom
+//            if (!this._dom) {
                 var self = this, dom = $('<div/>', {
                     'class': "controls controls-row"
                 }), input = null;
@@ -38,16 +45,22 @@
                         placeholder: self.getDisplayName(),
                         value: self.getValue()
                     });
-                    
+
+                    input.change(function() {
+                        self.setValue($(this).val());
+                        AppCreator.Attribute.selectedAttribute.refreshText();
+                        AppCreator.Attribute.selectedAttribute.draw();
+                    });
+
                     if (self.getInputType() === 'checkbox' && self.getValue() === true) {
                         input.attr('checked', 'checked');
                     }
-                    
-                    dom.append();
+
+                    dom.append(input);
                 } else {
                     var select = $('<select/>', {
                         name: self.getName()
-                    }), i = 0, values = self.getValue();
+                    }), i = 0, values = self.getValues();
 
                     if (Kinetic.Type._isArray(values)) {
                         for (i = 0; i < values.length; i++) {
@@ -58,6 +71,12 @@
                         }
                     }
 
+                    select.change(function() {
+                        self.setValue($(this).val());
+                        AppCreator.Attribute.selectedAttribute.refreshText();
+                        AppCreator.Attribute.selectedAttribute.draw();
+                    });
+
                     dom.append(select);
                 }
 
@@ -65,10 +84,10 @@
                     $(where).append(dom);
                 }
 
-                this._dom = dom;
-            }
-
-            return this._dom;
+                return dom;
+//            }
+//
+//            return this._dom;
         }
     };
 
@@ -103,75 +122,99 @@
      * @methodOf AppCreator.CFG.Property.prototype
      */
     AppCreator.GO.addGettersSetters(AppCreator.CFG.Property,
-            ['inputType', 'name', 'displayName', 'validationFunc', 'value', 'typelimitation']);
+            ['inputType', 'name', 'displayName', 'validationFunc', 'value', 'values', 'typeLimitation']);
 
-    AppCreator.CFG.propertiesForAttributeByModelType = {
-        model: [],
-        view: [],
-        router: []
-    };
-    
-    //----------- push default properties
-    (function(){
-        // reference to array
-        var model = AppCreator.CFG.propertiesForAttributeByModelType.model;
-        model.push(new AppCreator.CFG.Property({
+    AppCreator.CFG.attributeProperties = {};
+    AppCreator.CFG.attributeProperties.model = function() {
+        var model = {};
+        model['name'] = (new AppCreator.CFG.Property({
             name: 'name',
             displayName: 'Name',
             inputType: 'text'
         }));
-        model.push(new AppCreator.CFG.Property({
+        model['type'] = (new AppCreator.CFG.Property({
             name: 'type',
             displayName: 'Type',
             inputType: 'text'
         }));
-        model.push(new AppCreator.CFG.Property({
+        model['scope'] = (new AppCreator.CFG.Property({
             name: 'scope',
             displayName: 'Scope',
             inputType: 'combobox',
-            value: [
-                {'val':'private', 'text':'Private'},
-                {'val':'public', 'text':'Public'},
-                {'val':'protected', 'text':'Protected'},
-                {'val':'default', 'text':'Default'}
+            values: [
+                {'val': 'private', 'text': 'Private'},
+                {'val': 'public', 'text': 'Public'},
+                {'val': 'protected', 'text': 'Protected'},
+                {'val': 'default', 'text': 'Default'}
             ]
         }));
-        model.push(new AppCreator.CFG.Property({
+        model['static'] = (new AppCreator.CFG.Property({
             name: 'static',
             displayName: 'Is Static',
             inputType: 'checkbox'
         }));
-        model.push(new AppCreator.CFG.Property({
+        model['presistency'] = (new AppCreator.CFG.Property({
             name: 'presistency',
             displayName: 'Persistency',
             inputType: 'combobox',
-            value: [
-                {'val':'persistent', 'text':'Persistent'},
-                {'val':'local', 'text':'Not Persistent'},
-                {'val':'generated', 'text':'Generated'},
-                {'val':'dbgenerated', 'text':'Generated by database'}
+            values: [
+                {'val': 'persistent', 'text': 'Persistent'},
+                {'val': 'local', 'text': 'Not Persistent'},
+                {'val': 'generated', 'text': 'Generated'},
+                {'val': 'dbgenerated', 'text': 'Generated by database'}
             ]
         }));
-        model.push(new AppCreator.CFG.Property({
+        model['access'] = (new AppCreator.CFG.Property({
             name: 'access',
             displayName: 'Access',
             inputType: 'combobox',
-            value: [
-                {'val':'read', 'text':'Read'},
-                {'val':'write', 'text':'Write'},
-                {'val':'full', 'text':'Read & Write'}
+            values: [
+                {'val': 'read', 'text': 'Read'},
+                {'val': 'write', 'text': 'Write'},
+                {'val': 'full', 'text': 'Read & Write'}
             ]
         }));
-        model.push(new AppCreator.CFG.Property({
+        model['visibility'] = (new AppCreator.CFG.Property({
             name: 'visibility',
             displayName: 'Is Visible',
             inputType: 'checkbox',
             value: true
         }));
-        model.push(new AppCreator.CFG.Property({
+        model['unique'] = (new AppCreator.CFG.Property({
             name: 'unique',
             displayName: 'Is Unique',
             inputType: 'checkbox'
         }));
-    })();
+
+        return model;
+    };
+    AppCreator.CFG.attributeProperties.view = function() {
+        var view = {};
+        view['name'] = (new AppCreator.CFG.Property({
+            name: 'name',
+            displayName: 'Name',
+            inputType: 'text'
+        }));
+        view['type'] = (new AppCreator.CFG.Property({
+            name: 'type',
+            displayName: 'Type',
+            inputType: 'text'
+        }));
+
+        return view;
+    };
+    AppCreator.CFG.attributeProperties.router = function() {
+        var router = {};
+        router['name'] = (new AppCreator.CFG.Property({
+            name: 'name',
+            displayName: 'Name',
+            inputType: 'text'
+        }));
+        router['type'] = (new AppCreator.CFG.Property({
+            name: 'type',
+            displayName: 'Type',
+            inputType: 'text'
+        }));
+        return router;
+    };
 })();

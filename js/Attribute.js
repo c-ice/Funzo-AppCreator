@@ -9,17 +9,43 @@
 
     AppCreator.Attribute.selectedAttribute = null;
 
+    // static
+    AppCreator.Attribute.setSelectedAttribute = function(attr) {
+        // unselect old
+        if (AppCreator.Attribute.selectedAttribute !== null) {
+            AppCreator.Attribute.selectedAttribute.setSelected(false);
+        }
+
+        AppCreator.Attribute.selectedAttribute = attr;
+
+
+        var el = $("#properties").html(""), i = '';
+        if (attr === null)
+            return;
+
+        attr.setSelected(true);
+
+        for (i in attr.properties) {
+            el.append(attr.properties[i].getDOM());
+        }
+    };
+
     AppCreator.Attribute.prototype = {
         _initAttribute: function(config) {
             this.attributesDrawHeight = 19;
             this.attributesPadding = 2;
-            this._name = config.name;
-            this._type = config.type;
 
-            this.properties = {
-                type: config.type||"",
-                name: config.name||""
-            };
+            // Deep copy of global properties
+            var key = "model";
+            if (AppCreator.instance === AppCreator.otherInstances.view) {
+                key = "view";
+            } else if (AppCreator.instance === AppCreator.otherInstances.router) {
+                key = "router";
+            }
+
+            this.properties = AppCreator.CFG.attributeProperties[key]();
+
+            this.setText(config.name, config.type);
 
             // call super constructor
             Kinetic.Group.call(this, config);
@@ -44,8 +70,8 @@
                 x: 1,
                 y: 0,
                 height: this.attributesDrawHeight,
-                width: this.getWidth()-2,
-                fill:'#0088cc',
+                width: this.getWidth() - 2,
+                fill: '#0088cc',
                 fillEnabled: false
             });
 
@@ -57,12 +83,7 @@
 
             this.on('click.attr', function(e) {
                 if (this.getCanSelect()) {
-                    this.setSelected(true);
-                    if (AppCreator.Attribute.selectedAttribute !== null) {
-                        AppCreator.Attribute.selectedAttribute.setSelected(false);
-                    }
-
-                    AppCreator.Attribute.selectedAttribute = this;
+                    AppCreator.Attribute.setSelectedAttribute(this);
                 }
             });
         },
@@ -82,13 +103,13 @@
         },
         setText: function(name, type) {
             if (type) {
-                this._type = type;
+                this.properties['type'].setValue(type);
             }
             if (name) {
-                this._name = name;
+                this.properties['name'].setValue(name);
             }
             if (this._text) {
-                this._text.setText("+" + this._name + " : " + this._type);
+                this._text.setText("+" + this.properties['name'].getValue() + " : " + this.properties['type'].getValue());
 
                 if (this._text.getTextWidth() > this.getWidth()) {
                     this.resizeWithNewMinWidth(this._text.getTextWidth() + 2 * this.attributesPadding);
@@ -96,10 +117,10 @@
             }
         },
         refreshText: function() {
-            this.setText(this._name, this._type);
+            this.setText(this.properties['name'].getValue(), this.properties['type'].getValue());
         },
         setType: function(type) {
-            this._type = type;
+            this.properties['type'].setValue(type);
             this.refreshText();
         },
         getKineticText: function() {
@@ -114,7 +135,7 @@
             var calculated = newMinWidth;
             if (this.getWidth() < newMinWidth) {
                 this.setWidth(calculated);
-                this._rect.setWidth(calculated-2);
+                this._rect.setWidth(calculated - 2);
                 this._text.setWidth(calculated);
                 var points = this._line.getPoints();
                 points[1].x = calculated;
@@ -128,7 +149,7 @@
             if (newWidth) {
                 this.setWidth(newWidth);
                 this._text.setWidth(newWidth);
-                this._rect.setWidth(newWidth-2);
+                this._rect.setWidth(newWidth - 2);
                 points[1].x = newWidth;
             }
             if (newHeight) {

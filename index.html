@@ -78,7 +78,7 @@
                         $('.properties .modal-header button').on('click', function(e) {
                             var $parent = $('form.properties')[0], $child = $(this).children()[0];
 
-                            if ($($parent).css('right') === '-250px') {
+                            if ($($parent).css('right') === '40px') {
                                 $($parent).animate({
                                     right: '0px'
                                 }, {
@@ -88,7 +88,7 @@
                                 });
                             } else {
                                 $($parent).animate({
-                                    right: '-250px'
+                                    right:'40px'
                                 }).css({WebkitTransform: 'rotate(-90deg)'});
                             }
 
@@ -96,27 +96,11 @@
                         }).trigger('click');
                     </script>
                 </div>
-                <div class="modal-body">
-                    <div class="controls controls-row"> 
-                        <label class="control-label">Type</label>
-                        <input type="text" name="type" placeholder="Type">  
-                    </div>
-                    <div class="controls controls-row">
-                        <label class="control-label">Name</label>
-                        <input type="text" name="name" placeholder="Name">
-                    </div>
-                    <div class="controls controls-row">
-                        <label class="control-label">Name</label>
-                        <input type="text" name="name" placeholder="Name">
-                    </div>
-                    <div class="controls controls-row">
-                        <label class="control-label">Name</label>
-                        <input type="text" name="name" placeholder="Name">
-                    </div>
+                <div class="modal-body" id="properties">
 
                 </div>
                 <div class="modal-footer controls-row">
-                    <button style="float:right" type="submit" class="btn btn-small btn-primary">Save</button>
+                    <button style="float:right" type="submit" class="btn btn-small btn-primary" onclick="return false;">Save</button>
                 </div>
 
             </form>
@@ -124,6 +108,7 @@
             <script src="js/AppCreator.js"></script>
             <script src="js/utils/Global.js"></script>
             <script src="js/utils/Configuration.js"></script>
+            <script src="js/utils/Properties.js"></script>
             <script src="js/utils/GraphicTools.js"></script>
             <script src="js/utils/Images.js"></script>
             <script src="js/menus/ContextMenu.js"></script>

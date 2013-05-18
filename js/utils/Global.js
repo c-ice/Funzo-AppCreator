@@ -69,16 +69,25 @@
                         child.setSelected(true);
                 }
             }
-            
-            if (AppCreator.Attribute.selectedAttribute && 
-                    AppCreator.Attribute.selectedAttribute.getParent() !== except) 
+
+            if (AppCreator.Attribute.selectedAttribute &&
+                    AppCreator.Attribute.selectedAttribute.getParent() !== except)
             {
                 AppCreator.Attribute.selectedAttribute.setSelected(false);
                 AppCreator.Attribute.selectedAttribute.getParent().draw();
-                AppCreator.Attribute.selectedAttribute = null;
+                AppCreator.Attribute.setSelectedAttribute(null);
             }
+        },
+        clone: function(obj) {
+            var target = {};
+            for (var i in obj) {
+                if (obj.hasOwnProperty(i)) {
+                    target[i] = obj[i];
+                }
+            }
+            return target;
         }
-    };
+    }
 
 })();
 
