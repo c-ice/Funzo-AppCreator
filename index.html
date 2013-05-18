@@ -31,7 +31,7 @@
 
                         </li>
                         <li class="dropdown">
-                            <a href="#" id="drop2" role="button" class="dropdown-toggle" data-toggle="dropdown">Settings <b class="caret"></b></a>
+                            <a href="#" id="drop2" role="button" class="dropdown-toggle" data-toggle="dropdown"><i class="icon-wrench"></i> Settings <b class="caret"></b></a>
                             <ul class="dropdown-menu" role="menu" aria-labelledby="drop2">
                                 <li role="presentation"><a role="menuitem" tabindex="-1" href="#predefinedAttrs" data-toggle="modal">Set pre-defined attributes</a></li>
                             </ul>
@@ -43,7 +43,7 @@
                     </ul>
                     <script>
                         $('ul.nav a.toolButton').click(function(e) {
-                            instance.setSelectedTool($(this).data('tool'));
+                            AppCreator.setSelectedTool($(this).data('tool'));
                         });
                     </script>
                 </div>
@@ -53,23 +53,19 @@
             <div class="span12">
                 <div class="tabbable tabs-left">
                     <ul class="nav nav-tabs" style="margin-right: -1px;">
-                        <li class="active"><a href="#modelContainer" data-toggle="tab">Model</a></li>
-                        <li><a href="#lB" data-toggle="tab">View</a></li>
-                        <li><a href="#lC" data-toggle="tab">Controller</a></li>
-                        <li><a href="#lD" data-toggle="tab">Router</a></li>
+                        <li class="active" onclick="AppCreator.switchInstance('model');"><a href="#1A" data-toggle="tab">Model</a></li>
+                        <li onclick="AppCreator.switchInstance('view');"><a href="#lB" data-toggle="tab">View</a></li>
+                        <li onclick="AppCreator.switchInstance('router');"><a href="#lD" data-toggle="tab">Router</a></li>
                     </ul>
                     <div class="tab-content">
-                        <div class="tab-pane active" id="modelContainer">
-                            <div id="container"></div>   
+                        <div class="tab-pane active" id="1A">
+                            <div id="modelContainer" class="canvasContainer"></div>   
                         </div>
                         <div class="tab-pane" id="lB">
-                            <p>Howdy, I'm in Section B.</p>
-                        </div>
-                        <div class="tab-pane" id="lC">
-                            <p>What up girl, this is Section C.</p>
+                            <div id="viewContainer" class="canvasContainer"></div>   
                         </div>
                         <div class="tab-pane" id="lD">
-                            <p>Router will be here Soon.</p>
+                            <div id="routerContainer" class="canvasContainer"></div>   
                         </div>
                     </div>
                 </div>
@@ -80,7 +76,7 @@
                     Properties
                     <script>
                         $('.properties .modal-header button').on('click', function(e) {
-                            var $parent = $('form.properties')[0],  $child = $(this).children()[0];
+                            var $parent = $('form.properties')[0], $child = $(this).children()[0];
 
                             if ($($parent).css('right') === '-250px') {
                                 $($parent).animate({
@@ -95,7 +91,7 @@
                                     right: '-250px'
                                 }).css({WebkitTransform: 'rotate(-90deg)'});
                             }
-                            
+
                             $($child).toggleClass('icon-arrow-up icon-arrow-right');
                         });
                     </script>
@@ -143,9 +139,11 @@
             <script src="js/Association.js"></script>
             <script>
                         var instance = null;
+                        var viewInstance = null;
+                        var routerInstance = null;
                         var A, B;
                         $(document).ready(function() {
-                            instance = new AppCreator.Root();
+                            instance = new AppCreator.Root({container: 'modelContainer', type: 'model'});
 
                             A = new AppCreator.Element({
                                 x: 100,

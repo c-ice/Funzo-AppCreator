@@ -25,29 +25,75 @@ var AppCreator = {};
     AppCreator.gridSize = 1;
     AppCreator.selectedTool = AppCreator.tools.Mouse;
 
+    AppCreator.setSelectedTool = function(tool) {
+        for (var i in AppCreator.otherInstances) {
+            if (AppCreator.otherInstances[i] !== null) {
+                AppCreator.otherInstances[i].setSelectedTool(tool);
+            }
+        }
+        
+        AppCreator.selectedTool = tool;
+    };
+    
     AppCreator.models = [];
 
     AppCreator.clickedElement = null;
+    /**
+     * Current selected instance
+     */
     AppCreator.instance = null;
+
+    AppCreator.switchInstance = function(instance) {
+        var ins = AppCreator.otherInstances[instance];
+        //if not exists yet then create one 
+        // lazy load
+        if (!ins) {
+            ins = new AppCreator.Root({
+                container: instance+"Container",
+                type: instance
+            });
+        }
+        
+        AppCreator.instance = ins;
+    };
+
+    AppCreator.otherInstances = {
+        model: null,
+        view: null,
+        router: null
+    };
+
     // class instance
-    AppCreator.Root = function() {
-        this._init();
+    AppCreator.Root = function(config) {
+        this._init(config);
     };
     AppCreator.Root.prototype = {
-        _init: function() {
+        /**
+         * 
+         * @param {Object} config 
+         * {
+         *  container:ID of DIV element, 
+         *  type:(model|view|router)
+         * }
+         * @returns {undefined}
+         */
+        _init: function(config) {
             var self = this;
+            
             self._stage = new Kinetic.Stage({
-                container: 'container',
+                container: config.container || 'container',
                 width: 1920,
                 height: 1080
             });
 
+            AppCreator.otherInstances[config.type] = self;
             AppCreator.instance = self;
 
             self.currentAssoc = null;
             self._gridSize = 5;
             self._layer = new Kinetic.Layer();
             self._linesLayer = new Kinetic.Layer();
+            self._selectedTool = AppCreator.tools.Mouse;
 
             self._stage.add(self._linesLayer);
             self._stage.add(self._layer);
@@ -58,7 +104,7 @@ var AppCreator = {};
             }, false);
 
             self._stage.content.addEventListener("click", self._mouseToolClickEventListener, false);
-            
+
             $(self._stage.content).ready(function() {
                 self._offset = $(self._stage.content).offset();
             });
@@ -66,13 +112,13 @@ var AppCreator = {};
             self._stage.content.addEventListener("contextmenu", function(e) {
                 e.preventDefault();
                 var pos = {x: e.layerX, y: e.layerY}, element, assoc,
-                intersection = self._stage.getIntersection(pos);
+                        intersection = self._stage.getIntersection(pos);
                 if (!intersection) {
                     intersection = {'shape': self._stage.getIntersections(pos)[0]};
                 }
-                
+
                 element = AppCreator.GO.findAppCreatorParent(intersection.shape, 'Element');
-                assoc = (intersection.shape && intersection.shape.getOwner ? intersection.shape.getOwner():null);
+                assoc = (intersection.shape && intersection.shape.getOwner ? intersection.shape.getOwner() : null);
                 AppCreator.clickedElement = null;
                 AppCreator.GO.resetSelection(element);
                 AppCreator.ContextMenu.instance.show(e, assoc || element);
@@ -97,7 +143,7 @@ var AppCreator = {};
                             self._layer.add(B);
                             B.afterInit();
                             self._layer.draw();
-                            AppCreator.selectedTool = AppCreator.tools.Mouse;
+                            AppCreator.setSelectedTool(AppCreator.tools.Mouse);
                             $('ul.nav a.toolButton')[0].click();
                             B.fire('mousedown');
                             break;
@@ -122,11 +168,13 @@ var AppCreator = {};
                                     } else {
                                         //TODO: when only 2 points are setted asscoation is un reachable
                                         //if (intersects[i].getParent() !== self.currentAssoc.getSource()) {
-                                            this.removeEventListener('mousemove', self._assocMouseMoveEventListener, false);
-                                            self.currentAssoc.getPoints().pop().destroy();
-                                            self.currentAssoc.setTarget(intersects[i].getParent());
-                                            intersects[i].getParent().fire('dragmove');
-                                            self.currentAssoc = null;
+                                        this.removeEventListener('mousemove', self._assocMouseMoveEventListener, false);
+                                        self.currentAssoc.getPoints().pop().destroy();
+                                        self.currentAssoc.setTarget(intersects[i].getParent());
+                                        intersects[i].getParent().fire('dragmove');
+                                        self.currentAssoc = null;
+                                        AppCreator.setSelectedTool(AppCreator.tools.Mouse);
+                                        $('ul.nav a.toolButton')[0].click();
                                         //}
                                     }
 
@@ -161,14 +209,14 @@ var AppCreator = {};
             return this._offset;
         },
         setSelectedTool: function(tool) {
-            if (tool === AppCreator.selectedTool) {
+            if (tool === this._selectedTool) {
                 return;
             }
 
             if (tool === AppCreator.tools.Association ||
-                    AppCreator.selectedTool === AppCreator.tools.Association)
+                    this._selectedTool === AppCreator.tools.Association)
             {
-                var register = tool === AppCreator.tools.Association;
+                var register = (tool === AppCreator.tools.Association);
 
                 var childs = this._layer.getChildren();
                 for (var i in childs) {
@@ -178,8 +226,9 @@ var AppCreator = {};
                     }
                 }
             }
-
-            AppCreator.selectedTool = tool;
+            
+            this._selectedTool = tool;
+            $(this).trigger("selectedToolChanged");
         },
         _assocMouseMoveEventListener: function(e) {
             var points = AppCreator.instance.currentAssoc.getPoints();
@@ -197,7 +246,7 @@ var AppCreator = {};
 
             if (AppCreator.selectedTool === AppCreator.tools.Mouse && !evt.ctrlKey) {
                 AppCreator.GO.resetSelection(AppCreator.clickedElement);
-                
+
                 AppCreator.clickedElement = null;
             }
         }
