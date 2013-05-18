@@ -15,9 +15,9 @@
             self.createAttrs();
             // call super constructor
             Kinetic.Circle.call(self, config);
-            self.attrs.radius = 6;
-            self.attrs.fill = 'black';
-            self.attrs.opacity = 0.5;
+            self.setRadius(6);
+            self.setFill('black');
+            self.setOpacity(0.5);
 
             self.ACType = 'MovePoint';
             self.setDraggable(true);

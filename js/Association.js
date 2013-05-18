@@ -21,8 +21,8 @@
             
             this.setId('.assoc'+AppCreator.Association._counter ++);
             
-            this.attrs.stroke = 'black';
-            this.attrs.strokeWidth = 1;
+            this.setStroke('black');
+            this.setStrokeWidth(1);
             this.ACType = 'Association';
             self.on('mousedown', function(e) {
                 var point = self.addMovePoint([e.layerX, e.layerY]);

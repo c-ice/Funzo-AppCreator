@@ -16,7 +16,10 @@
             this._name = config.name;
             this._type = config.type;
 
-            this.properties = {};
+            this.properties = {
+                type: config.type||"",
+                name: config.name||""
+            };
 
             // call super constructor
             Kinetic.Group.call(this, config);
