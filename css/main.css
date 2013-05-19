@@ -90,6 +90,7 @@ body {
 }
 
 .properties {
+    z-index: 1040;
     width: 200px;
     left: auto;
     right:0;

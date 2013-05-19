@@ -1,7 +1,7 @@
 (function() {
     AppCreator.CFG = {};
 
-    AppCreator.CFG.primitiveDataTypes = ['String', 'Number', 'Bool', 'Reference'];
+    AppCreator.CFG.primitiveDataTypes = ['String', 'Number', 'Bool', 'Date', 'Reference'];
 
     AppCreator.CFG.ModelView = {};
 
@@ -66,7 +66,7 @@
             htmlStr += "<tr><td>" + AppCreator.CFG.presettedAttributes[i].id + "</td><td>"
                     + AppCreator.CFG.presettedAttributes[i].name + "</td><td>"
                     + AppCreator.CFG.presettedAttributes[i].type + "</td><td>"
-                    + "<button type='button' class='btn btn-danger' onclick='AppCreator.CFG.removePresettedAttribute(" 
+                    + "<button type='button' class='btn btn-danger' onclick='AppCreator.CFG.removePresettedAttribute("
                     + AppCreator.CFG.presettedAttributes[i].id + ")'>Remove</button></td></tr>";
         }
 
@@ -75,10 +75,10 @@
 
     //---------------------------------------------------------
 
-    AppCreator.CFG.typeahead = function(query) {
+    AppCreator.CFG.typeahead = function(query, source) {
         $(query).typeahead({
             items: 4,
-            source: AppCreator.CFG.primitiveDataTypes,
+            source: source || AppCreator.CFG.primitiveDataTypes,
             matcher: function(item) {
                 if (this.query === '?') {
                     return -1;
@@ -102,6 +102,6 @@
             return false;
         });
     });
-    
+
 })();
 

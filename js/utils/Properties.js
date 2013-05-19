@@ -38,14 +38,18 @@
                 }));
 
                 if (self.getInputType() !== 'combobox') {
-                    // TODO: add typehead function and attrs for holding array
                     input = $('<input/>', {
                         name: self.getName(),
                         type: self.getInputType(),
                         placeholder: self.getDisplayName(),
-                        value: self.getValue()
+                        value: self.getValue(),
+                        autocomplete: 'off'
                     });
-
+                    
+                    if (self.getName() === 'type') {
+                        AppCreator.CFG.typeahead(input);
+                    }
+                    
                     input.change(function() {
                         self.setValue($(this).val());
                         AppCreator.Attribute.selectedAttribute.refreshText();
