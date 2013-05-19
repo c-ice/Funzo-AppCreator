@@ -49,6 +49,10 @@ body {
     background-color: white;
 }
 
+.dialogBoxed .typeahead {
+    margin-top: 0;
+}
+
 .simpleDialog input,.titleDialog input {
     width: 48%;
     font-size: 12px;

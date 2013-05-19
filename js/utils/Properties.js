@@ -125,7 +125,7 @@
      * @methodOf AppCreator.CFG.Property.prototype
      */
     AppCreator.GO.addGettersSetters(AppCreator.CFG.Property,
-            ['inputType', 'name', 'displayName', 'value', 'values', 'typeLimitation']);
+            ['inputType', 'name', 'displayName', 'value', 'values', 'typeLimitation', 'attributeID']);
 
     AppCreator.CFG.attributeProperties = {};
     AppCreator.CFG.attributeProperties.model = function() {

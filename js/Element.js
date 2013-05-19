@@ -5,6 +5,8 @@
         this._initElement(config);
     };
 
+    AppCreator.Element._counter = 0;
+
     AppCreator.Element.prototype = {
         _initElement: function(config) {
             var self = this;
@@ -28,6 +30,8 @@
             // call super constructor
             Kinetic.Group.call(this, config);
             this.ACType = 'Element';
+            
+            this.setId(AppCreator.Element._counter++);
 
             this._border = new Kinetic.Rect({
                 x: 0,
@@ -197,7 +201,8 @@
                     width: this.getWidth(),
                     name: "",
                     type: "",
-                    canSelect: false
+                    canSelect: false,
+                    elementID: self.getId()
                 });
                 this._title.setKineticText(new Kinetic.Text({
                     id: 'title',
@@ -333,7 +338,8 @@
                     y: this._newAttributeY(),
                     width: this.getWidth(),
                     name: attribute.name,
-                    type: attribute.type
+                    type: attribute.type,
+                    elementID: this.getId()
                 });
 
                 this._minSize.height = (attr.getY() + attr.getHeight()) + this.attributesDrawHeight;

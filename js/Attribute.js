@@ -8,6 +8,7 @@
     };
 
     AppCreator.Attribute.selectedAttribute = null;
+    AppCreator.Attribute._counter = 0;
 
     // static
     AppCreator.Attribute.setSelectedAttribute = function(attr) {
@@ -36,7 +37,7 @@
             this.attributesPadding = 2;
 
             // Deep copy of global properties
-            var key = "model";
+            var key = "model", index;
             if (AppCreator.instance === AppCreator.otherInstances.view) {
                 key = "view";
             } else if (AppCreator.instance === AppCreator.otherInstances.router) {
@@ -50,6 +51,12 @@
             // call super constructor
             Kinetic.Group.call(this, config);
             this.ACType = 'Attribute';
+
+            this.setId(AppCreator.Attribute._counter++);
+
+            for (index in this.properties) {
+                this.properties[index].setAttributeID(this.getId());
+            }
 
             this._text = new Kinetic.Text({
                 x: this.attributesPadding,
@@ -166,5 +173,7 @@
 
     Kinetic.Node.addGetter(AppCreator.Attribute, 'selected', false);
     Kinetic.Node.addGetterSetter(AppCreator.Attribute, 'canSelect', true);
+    Kinetic.Node.addGetterSetter(AppCreator.Attribute, 'elementID');
+    
     Kinetic.Global.extend(AppCreator.Attribute, Kinetic.Group);
 })();
