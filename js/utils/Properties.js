@@ -17,81 +17,86 @@
             this.setInputType(config.inputType || "text");
             this.setName(config.name || "");
             this.setDisplayName(config.displayName || this.getName());
-            this.setValidationFunc(config.validationFunc || function() {
-                return true;
-            });
             this.setValue(config.value || "");
             this.setTypeLimitation(config.typeLimitation || "all");
             this.setValues(config.values || []);
         },
         getDOM: function(where) {
-              // TODO: BUG is here missing events after remove from document 
-              // workaround still creating new dom
+            // TODO: BUG is here missing events after remove from document 
+            // workaround still creating new dom
 //            if (!this._dom) {
-                var self = this, dom = $('<div/>', {
-                    'class': "controls controls-row"
-                }), input = null;
+            var self = this, dom = $('<div/>', {
+                'class': "controls controls-row"
+            }), input = null;
 
-                dom.append($('<label/>', {
-                    "class": "control-label",
-                    text: self.getDisplayName()
-                }));
+            dom.append($('<label/>', {
+                "class": "control-label",
+                text: self.getDisplayName()
+            }));
 
-                if (self.getInputType() !== 'combobox') {
-                    input = $('<input/>', {
-                        name: self.getName(),
-                        type: self.getInputType(),
-                        placeholder: self.getDisplayName(),
-                        value: self.getValue(),
-                        autocomplete: 'off'
-                    });
-                    
-                    if (self.getName() === 'type') {
-                        AppCreator.CFG.typeahead(input);
-                    }
-                    
-                    input.change(function() {
+            if (self.getInputType() !== 'combobox') {
+                input = $('<input/>', {
+                    name: self.getName(),
+                    type: self.getInputType(),
+                    placeholder: self.getDisplayName(),
+                    value: self.getValue(),
+                    autocomplete: 'off'
+                });
+
+                if (self.getName() === 'type') {
+                    AppCreator.CFG.typeahead(input);
+                }
+
+                input.change(function() {
+                    // is Valid
+                    if (self.validationFunc()) {
                         self.setValue($(this).val());
                         AppCreator.Attribute.selectedAttribute.refreshText();
                         AppCreator.Attribute.selectedAttribute.draw();
-                    });
-
-                    if (self.getInputType() === 'checkbox' && self.getValue() === true) {
-                        input.attr('checked', 'checked');
                     }
+                });
 
-                    dom.append(input);
-                } else {
-                    var select = $('<select/>', {
-                        name: self.getName()
-                    }), i = 0, values = self.getValues();
+                if (self.getInputType() === 'checkbox' && self.getValue() === true) {
+                    input.attr('checked', 'checked');
+                }
 
-                    if (Kinetic.Type._isArray(values)) {
-                        for (i = 0; i < values.length; i++) {
-                            select.append($("<option/>", {
-                                value: values[i].val,
-                                text: values[i].text
-                            }));
-                        }
+                dom.append(input);
+            } else {
+                var select = $('<select/>', {
+                    name: self.getName()
+                }), i = 0, values = self.getValues();
+
+                if (Kinetic.Type._isArray(values)) {
+                    for (i = 0; i < values.length; i++) {
+                        select.append($("<option/>", {
+                            value: values[i].val,
+                            text: values[i].text
+                        }));
                     }
+                }
 
-                    select.change(function() {
+                select.change(function() {
+                    if (self.validationFunc()) {
                         self.setValue($(this).val());
                         AppCreator.Attribute.selectedAttribute.refreshText();
                         AppCreator.Attribute.selectedAttribute.draw();
-                    });
+                    }
+                });
 
-                    dom.append(select);
-                }
+                dom.append(select);
+            }
 
-                if (where) {
-                    $(where).append(dom);
-                }
+            if (where) {
+                $(where).append(dom);
+            }
 
-                return dom;
+            return dom;
 //            }
 //
 //            return this._dom;
+        },
+        validationFunc: function() {
+            return this.getValue() !== "" && this.getValue() !== null;
         }
     };
 
@@ -112,12 +117,6 @@
      * @methodOf AppCreator.CFG.Property.prototype
      */
     /**
-     * function that validate user setted values, 
-     * @name setValidationFunc
-     * @return {Boolean} true of valid else false
-     * @methodOf AppCreator.CFG.Property.prototype
-     */
-    /**
      * Value of propertie
      * if (inputType == combobox) {
      *      value is Array of objects like this {val: 'value', text:"diplayText"}; 
@@ -126,7 +125,7 @@
      * @methodOf AppCreator.CFG.Property.prototype
      */
     AppCreator.GO.addGettersSetters(AppCreator.CFG.Property,
-            ['inputType', 'name', 'displayName', 'validationFunc', 'value', 'values', 'typeLimitation']);
+            ['inputType', 'name', 'displayName', 'value', 'values', 'typeLimitation']);
 
     AppCreator.CFG.attributeProperties = {};
     AppCreator.CFG.attributeProperties.model = function() {
@@ -209,6 +208,7 @@
     };
     AppCreator.CFG.attributeProperties.router = function() {
         var router = {};
+        
         router['name'] = (new AppCreator.CFG.Property({
             name: 'name',
             displayName: 'Name',
@@ -219,6 +219,7 @@
             displayName: 'Type',
             inputType: 'text'
         }));
+        
         return router;
     };
 })();
