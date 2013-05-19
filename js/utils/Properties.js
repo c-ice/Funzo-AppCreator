@@ -20,6 +20,7 @@
             this.setValue(config.value || "");
             this.setTypeLimitation(config.typeLimitation || "all");
             this.setValues(config.values || []);
+            this.setAttributeID(config.attributeID||"");
         },
         getDOM: function(where) {
             // TODO: BUG is here missing events after remove from document 
