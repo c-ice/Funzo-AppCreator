@@ -98,8 +98,9 @@
         },
         _draw: function() {
             $('#' + this.getId()).css({
-                'top': AppCreator.instance.getDOMOffset().top + this.getY(),
-                'left': AppCreator.instance.getDOMOffset().left + this.getX() - 1,
+                // domoffset bug if was selected another instance then returning 0,0
+                'top': AppCreator.otherInstances.model.getDOMOffset().top + this.getY(),
+                'left': AppCreator.otherInstances.model.getDOMOffset().left + this.getX() - 1,
                 'width': this.getWidth()
             });
 
